@@ -12,12 +12,26 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt-nodejs": "^0.0.3",
     "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "connect-flash": "^0.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.17.1",
     "express-handlebars": "^4.0.4",
     "express-session": "^1.17.1",
+    "faker": "^6.6.6",
+    "fast-xml-parser": "^4.2.6",
+    "imgur": "^2.3.0",
+    "jsonwebtoken": "^9.0.1",
     "method-override": "^3.0.0",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.5.2",
     "passport": "^0.4.1",
-    "passport-local": "^1.0.0"
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
+    "sequelize": "^6.32.1",
+    "sequelize-cli": "^6.6.1"
   }
 }

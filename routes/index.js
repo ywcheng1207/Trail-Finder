@@ -1,5 +1,5 @@
-const express = require('express')
-const router = express.Router()
+const apis = require('./apis')
 
-
-module.exports = router
+module.exports = {
+  apis
+}

@@ -2,20 +2,20 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('Notifications', {
+    await queryInterface.createTable('Favorites', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      notify: {
-        type: Sequelize.TEXT
-      },
-      isRead: {
-        type: Sequelize.BOOLEAN
-      },
       UserId: {
+        type: Sequelize.INTEGER
+      },
+      PostId: {
+        type: Sequelize.INTEGER
+      },
+      TrailId: {
         type: Sequelize.INTEGER
       },
       createdAt: {
@@ -29,6 +29,6 @@ module.exports = {
     })
   },
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('Notifications')
+    await queryInterface.dropTable('Favorites')
   }
 }

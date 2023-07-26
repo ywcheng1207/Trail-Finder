@@ -1,7 +1,7 @@
 const trailServices = require('../../services/trail-services')
 
-const trailServices = {
+const trailController = {
 
 }
 
-module.exports = trailServices
+module.exports = trailController

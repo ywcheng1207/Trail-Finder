@@ -1,5 +1,5 @@
 const express = require('express')
 const router = express.Router()
-const userController = require('../../../controllers/apis/user-controller')
+const trailController = require('../../../controllers/apis/trail-controller')
 
 module.exports = router

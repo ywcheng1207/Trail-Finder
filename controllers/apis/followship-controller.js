@@ -1,7 +1,7 @@
 const followshipServices = require('../../services/followship-services')
 
-const followshipServices = {
+const followshipController = {
 
 }
 
-module.exports = followshipServices
+module.exports = followshipController

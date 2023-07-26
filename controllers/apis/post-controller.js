@@ -1,7 +1,7 @@
 const postServices = require('../../services/post-services')
 
-const postServices = {
+const postController = {
 
 }
 
-module.exports = postServices
+module.exports = postController

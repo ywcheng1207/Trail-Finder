@@ -1,7 +1,7 @@
 const adminServices = require('../../services/admin-services')
 
-const adminServices = {
+const adminController = {
 
 }
 
-module.exports = adminServices
+module.exports = adminController

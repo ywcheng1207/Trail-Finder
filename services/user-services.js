@@ -24,6 +24,7 @@ const userServices = {
         email: email,
         password: hash
       })
+      delete newUser.dataValues.password // 不確定有沒有更好移除密碼的方法，先湊合著用
       cb(null, { user: newUser })
       
     } catch (err) {

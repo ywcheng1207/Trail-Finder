@@ -1,10 +1,10 @@
-'use strict';
+'use strict'
 const {
   Model
-} = require('sequelize');
+} = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class Report extends Model {
-    static associate(models) {
+    static associate (models) {
       Report.belongsTo(models.User, { foreignKey: 'userId' })
       Report.belongsTo(models.Post, { foreignKey: 'postId' })
     }
@@ -18,6 +18,6 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Report',
     tableName: 'Reports'
-  });
+  })
   return Report
-};
+}

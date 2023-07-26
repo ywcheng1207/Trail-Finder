@@ -1,10 +1,10 @@
-'use strict';
+'use strict'
 const {
   Model
-} = require('sequelize');
+} = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    static associate(models) {
+    static associate (models) {
       User.belongsToMany(User, {
         through: models.Followship,
         foreignKey: 'followingId',
@@ -19,6 +19,9 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Post, { foreignKey: 'userId' })
       User.hasMany(models.Like, { foreignKey: 'userId' })
       User.hasMany(models.Notification, { foreignKey: 'userId' })
+      User.hasMany(models.Trail, { foreignKey: 'userId' })
+      User.hasMany(models.Condition, { foreignKey: 'userId' })
+      User.hasMany(models.Favorite, { foreignKey: 'userId' })
     }
   }
   User.init({
@@ -34,5 +37,5 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'User',
     tableName: 'Users'
   })
-  return User;
-};
+  return User
+}

@@ -5,7 +5,7 @@ if (process.env.NODE_ENV !== 'production') {
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const routes = require('./routes')
+const { apis } = require('./routes')
 
 const methodOverride = require('method-override')
 
@@ -20,7 +20,7 @@ app.use(methodOverride('_method'))
 
 app.use(express.urlencoded({ extended: true }))
 
-app.use(routes)
+app.use('/api', apis)
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 module.exports = app

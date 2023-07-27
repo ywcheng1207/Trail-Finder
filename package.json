@@ -23,7 +23,7 @@
     "express": "^4.17.1",
     "express-handlebars": "^4.0.4",
     "express-session": "^1.17.1",
-    "faker": "^6.6.6",
+    "faker": "^4.1.0",
     "fast-xml-parser": "^4.2.6",
     "imgur": "^2.3.0",
     "jsonwebtoken": "^9.0.1",

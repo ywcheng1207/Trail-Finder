@@ -13,7 +13,10 @@ module.exports = (sequelize, DataTypes) => {
   }
   Post.init({
     title: DataTypes.STRING,
-    category: DataTypes.STRING,
+    category: {
+      type: DataTypes.ENUM('百岳', '郊山', '海外'),
+      allowNull: false
+    },
     description: DataTypes.TEXT,
     image: DataTypes.STRING,
     difficulty: DataTypes.STRING,

@@ -26,3 +26,41 @@ passport.use(new LocalStrategy(
   }
 ))
 
+const jwtOptions = {
+  jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.JWT_SECRET
+}
+
+passport.use(new JWTStrategy(jwtOptions, async (jwtPayload, cb) => {
+  try {
+    const user = User.findByPk(jwtPayload.id, {
+      include: [
+        { model: User, as: 'Followers' },
+        { model: User, as: 'Followings' }
+      ]
+    })
+    if (!user) return cb(null, false)
+    return cb(null, user)
+  } catch (err) {
+    cb(err)
+  }
+}))
+
+passport.serializeUser((user, cb) => {
+  cb(null, user.id)
+})
+passport.deserializeUser( async (id, cb) => {
+  try {
+    const user = await User.findByPk(id, {
+      include: [
+        { model: User, as: 'Followers' },
+        { model: User, as: 'Followings' }
+      ]
+    })
+    cb(null, user.toJSON())
+  } catch (err) {
+    cb(err)
+  }
+})
+
+module.exports = passport

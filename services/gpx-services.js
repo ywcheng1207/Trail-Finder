@@ -85,7 +85,23 @@ const gpxServices = {
       console.error(error)
       res.status(500).send('Internal Server Error')
     }
+  },
+  parseJsonToGpx: gpxJson => {
+    const builderOptions = {
+      attributeNamePrefix: '@_',
+      attrNodeName: 'attr',
+      textNodeName: '#text',
+      ignoreAttributes: false,
+      cdataTagName: '__cdata',
+      cdataPositionChar: '\\c',
+      format: true,
+      indentBy: '  '
+    }
+    const builder = new XMLBuilder(builderOptions)
+    const gpxXml = builder.build(gpxJson)
+    return gpxXml
   }
+
 }
 
 module.exports = gpxServices

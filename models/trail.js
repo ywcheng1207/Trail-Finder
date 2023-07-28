@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     gpx: DataTypes.JSON,
     image: DataTypes.STRING,
     startingPoint: DataTypes.STRING,
-    track: DataTypes.STRING,
+    track: DataTypes.TEXT,
     notes: DataTypes.TEXT,
     introduction: DataTypes.TEXT,
     location: DataTypes.STRING,

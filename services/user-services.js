@@ -77,12 +77,12 @@ const userServices = {
             ),
             'favoritePostCount'
           ],
-          // [
-          //   sequelize.literal(
-          //     `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = ${userId} AND Followships.)`
-          //   ),
-          //   'isFollow'
-          // ],
+          [
+            sequelize.literal(
+              `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = ${userId} AND Followships.followerId = ${req.user.id})`
+            ),
+            'isFollow'
+          ],
         ]
       })
       if (!user) {
@@ -91,7 +91,8 @@ const userServices = {
         throw err
       }
       const userData = {
-        ...user.toJSON()
+        ...user.toJSON(),
+        isFollow: Boolean(user.dataValues.isFollow)
       }
       cb(null, { user: userData })
     } catch (err) {

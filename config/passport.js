@@ -19,7 +19,7 @@ passport.use(new LocalStrategy(
       if (!isMatch) {
         return cb(null, false, { status: 401, message: '密碼不正確!' })
       }
-      return cb(null, user.get)
+      return cb(null, user.get())
     } catch (err) {
       return cb(err, false)
     }
@@ -49,7 +49,7 @@ passport.use(new JWTStrategy(jwtOptions, async (jwtPayload, cb) => {
 passport.serializeUser((user, cb) => {
   cb(null, user.id)
 })
-passport.deserializeUser( async (id, cb) => {
+passport.deserializeUser(async (id, cb) => {
   try {
     const user = await User.findByPk(id, {
       include: [

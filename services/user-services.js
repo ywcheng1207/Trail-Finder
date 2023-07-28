@@ -1,9 +1,22 @@
 const sequelize = require('sequelize')
 const bcrypt = require('bcryptjs')
-const followshipController = require('../controllers/apis/followship-controller')
 const { User, Favorite, Followship } = require('../models')
+const jwt = require('jsonwebtoken')
 
 const userServices = {
+  signIn: async (req, cb) => {
+    try {
+      const userData = req.user
+      delete userData.password
+      const token = jwt.sign(userData, process.env.JWT_SECRET, { expiresIn: '30d' })
+      cb(null, {
+        token,
+        user: userData
+      })
+    } catch (err) {
+      cb(err)
+    }
+  },
   signUp: async (req, cb) => {
     try {
       const { name, email, password, passwordCheck } = req.body
@@ -28,7 +41,7 @@ const userServices = {
       })
       delete newUser.dataValues.password // 不確定有沒有更好移除密碼的方法，先湊合著用
       cb(null, { user: newUser })
-      
+
     } catch (err) {
       cb(err)
     }

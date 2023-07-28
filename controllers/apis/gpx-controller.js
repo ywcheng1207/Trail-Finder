@@ -1,4 +1,4 @@
-const gpxServices = require('../../services/gpx-services')
+const gpxServices = require('../../services/gpx-services.js')
 
 const gpxController = {
   parseGpxToJson: (req, res, next) => {

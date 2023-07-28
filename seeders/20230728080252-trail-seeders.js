@@ -3,10 +3,10 @@
 const trailData = require('../path/trailInformation.json')
 const { Trail } = require('../models')
 const fs = require('fs')
-const gpxServices = require('../services/gpx-services')
+const gpxServices = require('../services/gpx-services.js')
 
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     try {
       const trailTitles = trailData.map(trail => trail.title)
       const existingTrails = await Trail.findAll({

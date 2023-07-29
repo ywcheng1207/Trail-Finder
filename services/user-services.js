@@ -50,7 +50,7 @@ const userServices = {
   },
   editUserData: async (req, cb) => {
     try {
-      const { name, email, password, introduction } = req.body
+      const { name, password, introduction } = req.body
       const { file } = req
       const currentUserId = req.user.id.toString()
       const userId = req.params.id
@@ -75,7 +75,6 @@ const userServices = {
       }
       await user.update({
         name: name || user.name,
-        email: email || user.email,
         avatar: filePaht || user.avatar,
         password: password ? await bcrypt.hash(password, 10) : user.password,
         introduction: introduction || user.introduction,

@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { User } = require('../models')
+const { User, Post } = require('../models')
 
 const userServices = {
   signIn: async (req, cb) => {
@@ -41,6 +41,32 @@ const userServices = {
       delete newUser.dataValues.password // 不確定有沒有更好移除密碼的方法，先湊合著用
       cb(null, { user: newUser })
 
+    } catch (err) {
+      cb(err)
+    }
+  },
+  getUserPosts: async (req, cb) => {
+    try {
+      const userId = req.params.id
+      const posts = await Post.findAll({
+        where: { userId: userId },
+        include: [
+          { model: User, attributes: [ 'id', 'avatar' ] }
+        ],
+        attributes: [
+          'id',
+          'title',
+          'image',
+          'difficulty',
+          'userId',
+          'createdAt',
+          'updatedAt'
+        ],
+        order: [['createdAt', 'DESC']]
+      })
+      console.log(posts)
+      const postsData = posts.map(post => post.toJSON())
+      cb(null, { post: postsData })
     } catch (err) {
       cb(err)
     }

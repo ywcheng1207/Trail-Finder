@@ -6,6 +6,9 @@ const userController = {
   },
   signUp: (req, res, next) => {
     userServices.signUp(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
+  getUserPosts: (req, res, next) => {
+    userServices.getUserPosts(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   }
 }
 

@@ -2,6 +2,8 @@ const sequelize = require('sequelize')
 const bcrypt = require('bcryptjs')
 const { User, Favorite, Followship } = require('../models')
 const jwt = require('jsonwebtoken')
+const { imgurFileHandler } = require('../helpers/file-heplers')
+const { User } = require('../models')
 
 const userServices = {
   signIn: async (req, cb) => {
@@ -42,6 +44,42 @@ const userServices = {
       delete newUser.dataValues.password // 不確定有沒有更好移除密碼的方法，先湊合著用
       cb(null, { user: newUser })
 
+    } catch (err) {
+      cb(err)
+    }
+  },
+  editUserData: async (req, cb) => {
+    try {
+      const { name, password, introduction } = req.body
+      const { file } = req
+      const currentUserId = req.user.id.toString()
+      const userId = req.params.id
+
+      if (currentUserId !== userId) {
+        const err = new Error('Cannot edit other users profile!')
+        err.status = 404
+        throw err
+      }
+      if (name && name.length > 50) throw new Error('Name length should <= 50')
+      if (introduction && introduction.length > 160) throw new Error('Introduction length should <= 160')
+
+      const [user, filePaht] = await Promise.all ([
+        User.findByPk(userId),
+        imgurFileHandler(file)
+      ])
+
+      if (!user) {
+        const err = new Error('User does not exist!')
+        err.status = 404
+        throw err
+      }
+      await user.update({
+        name: name || user.name,
+        avatar: filePaht || user.avatar,
+        password: password ? await bcrypt.hash(password, 10) : user.password,
+        introduction: introduction || user.introduction,
+      })
+      cb(null, { message: 'User info edited successfully' })
     } catch (err) {
       cb(err)
     }

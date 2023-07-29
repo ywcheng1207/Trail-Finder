@@ -44,6 +44,40 @@ const userServices = {
     } catch (err) {
       cb(err)
     }
+  },
+  editUserData: async (req, cb) => {
+    try {
+      const { name, email, password, introduction } = req.body
+      const currentUserId = req.user.id.toString()
+      const userId = req.params.id
+      console.log(name)
+
+      if (currentUserId !== userId) {
+        const err = new Error('Cannot edit other users profile!')
+        err.status = 404
+        throw err
+      }
+      if (name && name.length > 50) throw new Error('Name length should <= 50')
+      if (introduction && introduction.length > 160) throw new Error('Introduction length should <= 160')
+
+      const user = await User.findByPk(req.params.id)
+
+      if (!user) {
+        const err = new Error('User does not exist!')
+        err.status = 404
+        throw err
+      }
+      await user.update({
+        name: name || user.name,
+        email: email || user.email,
+        password: password ? await bcrypt.hash(password, 10) : user.password,
+        introduction: introduction || user.introduction,
+      })
+      cb(null, { message: 'User info edited successfully' })
+
+    } catch (err) {
+      cb(err)
+    }
   }
 }
 

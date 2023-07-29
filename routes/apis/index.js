@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const users= require('./modules/users')
+const users = require('./modules/users')
 const userController = require('../../controllers/apis/user-controller')
 const { apiErrorHandler } = require('../../middleware/error-handler')
 const { signInAuth, isUser, isAdmin, authenticated } = require('../../middleware/auth')

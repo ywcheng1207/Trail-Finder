@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const { imgurFileHandler } = require('../helpers/file-heplers')
 const { User } = require('../models')
 
 const userServices = {
@@ -48,9 +49,9 @@ const userServices = {
   editUserData: async (req, cb) => {
     try {
       const { name, email, password, introduction } = req.body
+      const { file } = req
       const currentUserId = req.user.id.toString()
       const userId = req.params.id
-      console.log(name)
 
       if (currentUserId !== userId) {
         const err = new Error('Cannot edit other users profile!')
@@ -60,7 +61,10 @@ const userServices = {
       if (name && name.length > 50) throw new Error('Name length should <= 50')
       if (introduction && introduction.length > 160) throw new Error('Introduction length should <= 160')
 
-      const user = await User.findByPk(req.params.id)
+      const [user, filePaht] = await Promise.all ([
+        User.findByPk(userId),
+        imgurFileHandler(file)
+      ])
 
       if (!user) {
         const err = new Error('User does not exist!')
@@ -70,6 +74,7 @@ const userServices = {
       await user.update({
         name: name || user.name,
         email: email || user.email,
+        avatar: filePaht || user.avatar,
         password: password ? await bcrypt.hash(password, 10) : user.password,
         introduction: introduction || user.introduction,
       })

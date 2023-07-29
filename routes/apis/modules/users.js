@@ -6,4 +6,7 @@ const upload = require('../../../middleware/multer')
 
 router.put('/:id', upload.single('avatar'), userController.editUserData)
 
+router.get('/:id', userController.getUserData)
+router.use('/', (req, res) => res.send('this is user page.'))
+
 module.exports = router

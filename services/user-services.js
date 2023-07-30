@@ -171,6 +171,42 @@ const userServices = {
     } catch (err) {
       cb(err)
     }
+  },
+  getUserFollowers: async (req, cb) => {
+    try {
+      const userId = req.params.userId
+      const followers = await Followship.findAll({
+        where: { followingId: userId },
+        include: [
+          {
+            model: User,
+            as: 'Follower',
+            attributes: ['id', 'name', 'avatar']
+          }
+        ],
+        attributes: [
+          'id',
+          'followerId',
+          'followingId',
+          'createdAt',
+          'updatedAt',
+          [
+            sequelize.literal(
+              `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = follower.id AND Followships.followerId = ${req.user.id})`
+            ),
+            'isFollow'
+          ],
+        ]
+      })
+      const followersData = followers.map(function (follower) {
+        const followerJson = follower.toJSON()
+        followerJson.isFollow = Boolean(followerJson.isFollow)
+        return followerJson
+      })
+      cb(null, { followers: followersData })
+    } catch (err) {
+      cb(err)
+    }
   }
 }
 

@@ -47,6 +47,32 @@ const userServices = {
       cb(err)
     }
   },
+  getUserPosts: async (req, cb) => {
+    try {
+      const userId = req.params.userId
+      const posts = await Post.findAll({
+        where: { userId: userId },
+        include: [
+          { model: User, attributes: [ 'id', 'avatar' ] }
+        ],
+        attributes: [
+          'id',
+          'title',
+          'image',
+          'difficulty',
+          'userId',
+          'createdAt',
+          'updatedAt'
+        ],
+        order: [['createdAt', 'DESC']]
+      })
+      console.log(posts)
+      const postsData = posts.map(post => post.toJSON())
+      cb(null, { post: postsData })
+    } catch (err) {
+      cb(err)
+    }
+  },
   editUserData: async (req, cb) => {
     try {
       const { name, password, introduction } = req.body
@@ -164,7 +190,14 @@ const userServices = {
         ],
         order: [['createdAt', 'DESC']],
       })
-      const favoritePost = favorite.map(post => post.toJSON())
+      const favoritePost = favorite.map(post => {
+        const postJson = post.toJSON()
+        const description = postJson.Post.description
+        if (description.length > 200) {
+          postJson.Post.description = description.slice(0, 200)
+        }
+        return postJson
+      })
       cb(null, { favoritePost: favoritePost })
     } catch (err) {
       cb(err)

@@ -1,9 +1,8 @@
 const sequelize = require('sequelize')
 const bcrypt = require('bcryptjs')
-const { User, Favorite, Followship } = require('../models')
 const jwt = require('jsonwebtoken')
 const { imgurFileHandler } = require('../helpers/file-heplers')
-const { User } = require('../models')
+const { User, Post, Favorite, Followship } = require('../models')
 
 const userServices = {
   signIn: async (req, cb) => {
@@ -133,6 +132,42 @@ const userServices = {
         isFollow: Boolean(user.dataValues.isFollow)
       }
       cb(null, { user: userData })
+    } catch (err) {
+      cb(err)
+    }
+  },
+  getUserFollowings: async (req, cb) => {
+    try {
+      const userId = req.params.userId
+      const followings = await Followship.findAll({
+        where: { followerId: userId },
+        include: [
+          { 
+            model: User, 
+            as: 'Following',
+            attributes: ['id', 'name', 'avatar']
+          }
+        ],
+        attributes: [
+          'id',
+          'followerId',
+          'followingId',
+          'createdAt',
+          'updatedAt',
+          [
+            sequelize.literal(
+              `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = following.id AND Followships.followerId = ${req.user.id})`
+            ),
+            'isFollow'
+          ],
+        ]
+      })
+      const followingsData = followings.map(function (following) {
+        const followingJson = following.toJSON()
+        followingJson.isFollow = Boolean(followingJson.isFollow)
+        return followingJson
+      })
+      cb(null, { followings: followingsData })
     } catch (err) {
       cb(err)
     }

@@ -12,6 +12,9 @@ const userController = {
   },
   getUserData: (req, res, next) => {
     userServices.getUserData(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
+  getUserFollowings: (req, res, next) => {
+    userServices.getUserFollowings(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   }
 }
 

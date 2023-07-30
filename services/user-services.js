@@ -1,9 +1,8 @@
 const sequelize = require('sequelize')
 const bcrypt = require('bcryptjs')
-const { User, Favorite, Followship } = require('../models')
 const jwt = require('jsonwebtoken')
 const { imgurFileHandler } = require('../helpers/file-heplers')
-const { User } = require('../models')
+const { User, Post, Favorite, Followship } = require('../models')
 
 const userServices = {
   signIn: async (req, cb) => {
@@ -133,6 +132,40 @@ const userServices = {
         isFollow: Boolean(user.dataValues.isFollow)
       }
       cb(null, { user: userData })
+    } catch (err) {
+      cb(err)
+    }
+  },
+  getUserFavoritePost: async (req, cb) => {
+    try {
+      const userId = req.params.userId
+      const favorite = await Favorite.findAll({
+        where: { userId: userId },
+        include: [
+          { 
+            model: Post,
+            include: [
+              { model: User, attributes:['id', 'name', 'avatar'] }
+            ],
+            attributes: [
+              'id',
+              'title',
+              'description',
+              'image',
+              'userId',
+              'createdAt',
+              'updatedAt'
+            ],
+          }
+        ],
+        attributes: [
+          'id',
+          'postId',
+        ],
+        order: [['createdAt', 'DESC']],
+      })
+      const favoritePost = favorite.map(post => post.toJSON())
+      cb(null, { favoritePost: favoritePost })
     } catch (err) {
       cb(err)
     }

@@ -167,16 +167,100 @@ const userServices = {
       cb(err)
     }
   },
+  getUserFollowings: async (req, cb) => {
+    try {
+      const userId = req.params.userId
+      const checkUser = await User.findByPk(userId)
+      if (!checkUser) {
+        const err = new Error('User dose not exists!')
+        err.status = 404
+        throw err
+      }
+      const followings = await Followship.findAll({
+        where: { followerId: userId },
+        include: [
+          {
+            model: User,
+            as: 'Following',
+            attributes: ['id', 'name', 'avatar']
+          }
+        ],
+        attributes: [
+          'id',
+          'followerId',
+          'followingId',
+          'createdAt',
+          'updatedAt',
+          [
+            sequelize.literal(
+              `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = following.id AND Followships.followerId = ${req.user.id})`
+            ),
+            'isFollow'
+          ],
+        ]
+      })
+      const followingsData = followings.map(function (following) {
+        const followingJson = following.toJSON()
+        followingJson.isFollow = Boolean(followingJson.isFollow)
+        return followingJson
+      })
+      cb(null, { followings: followingsData })
+    } catch (err) {
+      cb(err)
+    }
+  },
+  getUserFollowers: async (req, cb) => {
+    try {
+      const userId = req.params.userId
+      const checkUser = await User.findByPk(userId)
+      if (!checkUser) {
+        const err = new Error('User dose not exists!')
+        err.status = 404
+        throw err
+      }
+      const followers = await Followship.findAll({
+        where: { followingId: userId },
+        include: [
+          {
+            model: User,
+            as: 'Follower',
+            attributes: ['id', 'name', 'avatar']
+          }
+        ],
+        attributes: [
+          'id',
+          'followerId',
+          'followingId',
+          'createdAt',
+          'updatedAt',
+          [
+            sequelize.literal(
+              `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = follower.id AND Followships.followerId = ${req.user.id})`
+            ),
+            'isFollow'
+          ],
+        ]
+      })
+      const followersData = followers.map(function (follower) {
+        const followerJson = follower.toJSON()
+        followerJson.isFollow = Boolean(followerJson.isFollow)
+        return followerJson
+      })
+      cb(null, { followers: followersData })
+    } catch (err) {
+      cb(err)
+    }
+  },
   getUserFavoritePost: async (req, cb) => {
     try {
       const userId = req.params.userId
       const favorite = await Favorite.findAll({
         where: { userId: userId },
         include: [
-          { 
+          {
             model: Post,
             include: [
-              { model: User, attributes:['id', 'name', 'avatar'] }
+              { model: User, attributes: ['id', 'name', 'avatar'] }
             ],
             attributes: [
               'id',

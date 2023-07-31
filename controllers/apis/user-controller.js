@@ -21,6 +21,9 @@ const userController = {
   },
   getUserFollowers: (req, res, next) => {
     userServices.getUserFollowers(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
+  getUserFavoritePost: (req, res, next) => {
+    userServices.getUserFavoritePost(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   }
 }
 

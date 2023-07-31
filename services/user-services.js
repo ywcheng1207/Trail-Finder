@@ -8,6 +8,11 @@ const userServices = {
   signIn: async (req, cb) => {
     try {
       const userData = req.user
+      if (userData.isSuspended === true) {
+        const err = new Error('User is suspended')
+        err.status = 404
+        throw err
+      }
       delete userData.password
       const token = jwt.sign(userData, process.env.JWT_SECRET, { expiresIn: '30d' })
       cb(null, {
@@ -165,11 +170,17 @@ const userServices = {
   getUserFollowings: async (req, cb) => {
     try {
       const userId = req.params.userId
+      const checkUser = await User.findByPk(userId)
+      if (!checkUser) {
+        const err = new Error('User dose not exists!')
+        err.status = 404
+        throw err
+      }
       const followings = await Followship.findAll({
         where: { followerId: userId },
         include: [
-          { 
-            model: User, 
+          {
+            model: User,
             as: 'Following',
             attributes: ['id', 'name', 'avatar']
           }
@@ -201,6 +212,12 @@ const userServices = {
   getUserFollowers: async (req, cb) => {
     try {
       const userId = req.params.userId
+      const checkUser = await User.findByPk(userId)
+      if (!checkUser) {
+        const err = new Error('User dose not exists!')
+        err.status = 404
+        throw err
+      }
       const followers = await Followship.findAll({
         where: { followingId: userId },
         include: [
@@ -230,6 +247,47 @@ const userServices = {
         return followerJson
       })
       cb(null, { followers: followersData })
+    } catch (err) {
+      cb(err)
+    }
+  },
+  getUserFavoritePost: async (req, cb) => {
+    try {
+      const userId = req.params.userId
+      const favorite = await Favorite.findAll({
+        where: { userId: userId },
+        include: [
+          {
+            model: Post,
+            include: [
+              { model: User, attributes: ['id', 'name', 'avatar'] }
+            ],
+            attributes: [
+              'id',
+              'title',
+              'description',
+              'image',
+              'userId',
+              'createdAt',
+              'updatedAt'
+            ],
+          }
+        ],
+        attributes: [
+          'id',
+          'postId',
+        ],
+        order: [['createdAt', 'DESC']],
+      })
+      const favoritePost = favorite.map(post => {
+        const postJson = post.toJSON()
+        const description = postJson.Post.description
+        if (description.length > 200) {
+          postJson.Post.description = description.slice(0, 200)
+        }
+        return postJson
+      })
+      cb(null, { favoritePost: favoritePost })
     } catch (err) {
       cb(err)
     }

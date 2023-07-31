@@ -73,6 +73,7 @@ const postServices = {
           'image',
           'difficulty',
           'recommend',
+          'inProgress',
           'userId',
           'createdAt',
           'updatedAt',

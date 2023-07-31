@@ -8,6 +8,11 @@ const userServices = {
   signIn: async (req, cb) => {
     try {
       const userData = req.user
+      if (userData.isSuspended === true) {
+        const err = new Error('User is suspended')
+        err.status = 404
+        throw err
+      }
       delete userData.password
       const token = jwt.sign(userData, process.env.JWT_SECRET, { expiresIn: '30d' })
       cb(null, {

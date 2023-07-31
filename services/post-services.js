@@ -5,6 +5,7 @@ const { imgurFileHandler } = require('../helpers/file-heplers')
 const postServices = {
   getPosts: async (req, cb) => {
     try {
+      const limit = Number(req.query.limit) || null
       const posts = await Post.findAll({
         where: { inProgress: false },
         include: [
@@ -45,6 +46,7 @@ const postServices = {
             'isLike'
           ],
         ],
+        limit: limit,
         order: [['createdAt', 'DESC']]
       })
       const postsData = posts.map(post => {

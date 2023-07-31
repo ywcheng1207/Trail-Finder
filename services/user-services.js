@@ -165,6 +165,12 @@ const userServices = {
   getUserFollowings: async (req, cb) => {
     try {
       const userId = req.params.userId
+      const checkUser = await User.findByPk(userId)
+      if (!checkUser) {
+        const err = new Error('User dose not exists!')
+        err.status = 404
+        throw err
+      }
       const followings = await Followship.findAll({
         where: { followerId: userId },
         include: [
@@ -201,6 +207,12 @@ const userServices = {
   getUserFollowers: async (req, cb) => {
     try {
       const userId = req.params.userId
+      const checkUser = await User.findByPk(userId)
+      if (!checkUser) {
+        const err = new Error('User dose not exists!')
+        err.status = 404
+        throw err
+      }
       const followers = await Followship.findAll({
         where: { followingId: userId },
         include: [

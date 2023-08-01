@@ -16,6 +16,25 @@ const adminServices = {
       cb(err)
     }
   },
+  getAllUsers: async (req, cb) => {
+    try {
+      const allUsers = await User.findAll({
+        attributes: [
+          'id',
+          'name',
+          'introduction',
+          'avatar',
+          'createdAt',
+          'updatedAt'
+        ],
+        order: [['createdAt', 'DESC']]
+      })
+      const usersData = allUsers.map(user => user.toJSON())
+      cb(null, usersData)
+    } catch (err) {
+      cb(err)
+    }
+  }
 }
 
 module.exports = adminServices

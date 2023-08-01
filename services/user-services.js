@@ -2,7 +2,7 @@ const sequelize = require('sequelize')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { imgurFileHandler } = require('../helpers/file-heplers')
-const { User, Post, Favorite, Followship } = require('../models')
+const { User, Post, Favorite, Followship, Notification } = require('../models')
 
 const userServices = {
   signIn: async (req, cb) => {
@@ -288,6 +288,25 @@ const userServices = {
         return postJson
       })
       cb(null, { favoritePost: favoritePost })
+    } catch (err) {
+      cb(err)
+    }
+  },
+  getUserNotifications: async (req, cb) => {
+    try {
+      const userId = req.params.userId
+      const user = await User.findByPk(userId)
+      if (!user) {
+        const err = new Error('User dose not exists!')
+        err.status = 404
+        throw err
+      }
+      const notifications = await Notification.findAll({
+        where: { userId: userId },
+        order: [['createdAt', 'DESC']]
+      })
+      const notifyData = notifications.map(notify => notify.toJSON())
+      cb(null, notifyData)
     } catch (err) {
       cb(err)
     }

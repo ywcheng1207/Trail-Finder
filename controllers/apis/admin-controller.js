@@ -16,6 +16,9 @@ const adminController = {
   removeSuspension: (req, res, next) => {
     adminServices.removeSuspension(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   },
+  sendNotify: (req, res, next) => {
+    adminServices.sendNotify(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
 }
 
 module.exports = adminController

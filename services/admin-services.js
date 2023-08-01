@@ -1,6 +1,6 @@
 const sequelize = require('sequelize')
 const jwt = require('jsonwebtoken')
-const { User, Post, Favorite, Followship } = require('../models')
+const { User, Post, Favorite, Followship, Notification } = require('../models')
 
 const adminServices = {
   signIn: async (req, cb) => {
@@ -123,6 +123,29 @@ const adminServices = {
         createdAt: userData.createdAt,
         updatedAt: userData.updatedAt
       })
+    } catch (err) {
+      cb(err)
+    }
+  },
+  sendNotify: async (req, cb) => {
+    try {
+      const userId = req.params.userId
+      const { notify } = req.body
+      const user = await User.findByPk(userId)
+      if (!user) {
+        const err = new Error('User does not exist!')
+        err.status = 404
+        throw err
+      }
+      const notification = await Notification.create({
+        notify: notify,
+        isRead: false,
+        userId: user.id
+      })
+      const notifyData = {
+        ...notification.toJSON()
+      }
+      cb(null, notifyData)
     } catch (err) {
       cb(err)
     }

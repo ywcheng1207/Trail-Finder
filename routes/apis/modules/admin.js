@@ -3,6 +3,7 @@ const router = express.Router()
 
 const adminController = require('../../../controllers/apis/admin-controller')
 
+router.post('/:userId/notify', adminController.sendNotify)
 router.get('/users/suspension', adminController.getAllSuspension)
 router.put('/suspend', adminController.addSuspension)
 router.put('/unsuspend', adminController.removeSuspension)

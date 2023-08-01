@@ -4,6 +4,8 @@ const router = express.Router()
 const postController = require('../../../controllers/apis/post-controller')
 
 router.get('/:postId', postController.getPost)
+router.get('/all', postController.getAllPosts)
+router.get('/', postController.getPosts)
 
 router.use('/', (req, res) => res.send('this is post page.'))
 

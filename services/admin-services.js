@@ -56,6 +56,60 @@ const adminServices = {
     } catch (err) {
       cb(err)
     }
+  },
+  addSuspension: async (req, cb) => {
+    try {
+      const userId = req.body.userId
+      const user = await User.findByPk(userId)
+      if (!user) {
+        const err = new Error('User does not exist!')
+        err.status = 404
+        throw err
+      }
+      if (user.isSuspended === true) {
+        const err = new Error('User is already suspended!')
+        err.status = 404
+        throw err
+      }
+      const userUpdate = await user.update({
+        isSuspended: true
+      })
+      if (!userUpdate) {
+        const err = new Error('Update fail')
+        err.status = 404
+        throw err
+      }
+      cb(null, { message: `User ${user.name} has suspended successfully.` })
+    } catch (err) {
+      cb(err)
+    }
+  },
+  removeSuspension: async (req, cb) => {
+    try {
+      const userId = req.body.userId
+      const user = await User.findByPk(userId)
+      if (!user) {
+        const err = new Error('User does not exist!')
+        err.status = 404
+        throw err
+      }
+      if (user.isSuspended === false) {
+        const err = new Error('The user has already lifted the suspension!')
+        err.status = 404
+        throw err
+      }
+      const userUpdate = await user.update({
+        isSuspended: false
+      })
+      if (!userUpdate) {
+        const err = new Error('Update fail')
+        err.status = 404
+        throw err
+      }
+      cb(null, { message: `User ${user.name} successfully resumed.` })
+    } catch (err) {
+      cb(err)
+    }
   }
 }
 

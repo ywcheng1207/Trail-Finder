@@ -8,7 +8,20 @@ const postServices = {
       const postId = req.params.postId
       const post = await Post.findByPk(postId ,{
         include: [
-          { model: User, attributes: ['id', 'name', 'avatar'] }
+          { 
+            model: User, 
+            attributes: [
+              'id', 
+              'name', 
+              'avatar',
+              [
+                sequelize.literal(
+                  `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = User.id AND Followships.followerId = ${req.user.id})`
+                ),
+                'isFollow'
+              ]
+            ]
+          }
         ],
         attributes: [
           'id',
@@ -44,13 +57,16 @@ const postServices = {
               `(SELECT COUNT(*) FROM Likes WHERE Likes.postId = Post.id AND Likes.userId = ${req.user.id})`
             ),
             'isLike'
-          ],
+          ]
         ],
         order: [['createdAt', 'DESC']]
       })
       const postsData = {
         ...post.toJSON()
       }
+      postsData.isFavorite = Boolean(postsData.isFavorite)
+      postsData.isLike = Boolean(postsData.isLike)
+      postsData.User.isFollow = Boolean(postsData.User.isFollow)
       cb(null, postsData)
     } catch (err) {
       cb(err)
@@ -112,7 +128,6 @@ const postServices = {
       } catch (err) {
         cb(err)
       }
-
   },
   getAllPosts: async (req, cb) => {
     try {

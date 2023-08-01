@@ -79,7 +79,15 @@ const adminServices = {
         err.status = 404
         throw err
       }
-      cb(null, { message: `User ${user.name} has suspended successfully.` })
+      const userData = {
+        ...userUpdate.toJSON()
+      }
+      cb(null, {
+        message: 'Suspend successfully',
+        userId: userData.id, 
+        createdAt: userData.createdAt, 
+        updatedAt: userData.updatedAt
+      })
     } catch (err) {
       cb(err)
     }
@@ -106,7 +114,15 @@ const adminServices = {
         err.status = 404
         throw err
       }
-      cb(null, { message: `User ${user.name} successfully resumed.` })
+      const userData = {
+        ...userUpdate.toJSON()
+      }
+      cb(null, {
+        message: 'Remove suspension successfully',
+        userId: userData.id,
+        createdAt: userData.createdAt,
+        updatedAt: userData.updatedAt
+      })
     } catch (err) {
       cb(err)
     }

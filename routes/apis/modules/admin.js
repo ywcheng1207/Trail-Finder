@@ -3,6 +3,7 @@ const router = express.Router()
 
 const adminController = require('../../../controllers/apis/admin-controller')
 
+router.get('/users/suspension', adminController.getAllSuspension)
 router.get('/users', adminController.getAllUsers)
 
 router.use('/', (req, res) => res.send('this is admin page.'))

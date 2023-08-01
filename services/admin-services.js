@@ -34,6 +34,28 @@ const adminServices = {
     } catch (err) {
       cb(err)
     }
+  },
+  getAllSuspension: async (req, cb) => {
+    try {
+      const allUsers = await User.findAll({
+        where: { isSuspended: true },
+        attributes: [
+          'id',
+          'name',
+          'email',
+          'introduction',
+          'avatar',
+          'isSuspended',
+          'createdAt',
+          'updatedAt'
+        ],
+        order: [['createdAt', 'DESC']]
+      })
+      const usersData = allUsers.map(user => user.toJSON())
+      cb(null, usersData)
+    } catch (err) {
+      cb(err)
+    }
   }
 }
 

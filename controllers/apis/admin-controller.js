@@ -7,6 +7,9 @@ const adminController = {
   getAllUsers: (req, res, next) => {
     adminServices.getAllUsers(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   },
+  getAllSuspension: (req, res, next) => {
+    adminServices.getAllSuspension(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
 }
 
 module.exports = adminController

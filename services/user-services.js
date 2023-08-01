@@ -307,7 +307,7 @@ const userServices = {
       })
       const notifyData = notifications.map(notify => notify.toJSON())
       cb(null, notifyData)
-    } catch (err) {
+    } catch (err) { 
       cb(err)
     }
   }

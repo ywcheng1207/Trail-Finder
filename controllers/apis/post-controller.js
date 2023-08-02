@@ -16,6 +16,9 @@ const postController = {
   postTempPost: (req, res, next) => {
     postServices.postTempPost(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   },
+  getTempPost: (req, res, next) => {
+    postServices.getTempPost(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
 }
 
 module.exports = postController

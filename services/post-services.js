@@ -245,6 +245,44 @@ const postServices = {
     } catch (err) {
       cb(err)
     }
+  },
+  getTempPost: async (req, cb) => {
+    try {
+      const postId = req.params.postId
+      const tempPost = await Post.findOne({
+        where: { id: postId, inProgress: true },
+        attributes: [
+          'id',
+          'title',
+          'category',
+          'description',
+          'image',
+          'difficulty',
+          'recommend',
+          'inProgress',
+          'userId',
+          'createdAt',
+          'updatedAt',
+        ],
+        order: [['createdAt', 'DESC']]
+      })
+      if (!tempPost) {
+        const err = new Error('Cannot find draft post!')
+        err.status = 404
+        throw err
+      }
+      if (tempPost.userId !== req.user.id) {
+        const err = new Error('Cannot get other users draft post!')
+        err.status = 404
+        throw err
+      }
+      const postsData = {
+        ...tempPost.toJSON()
+      }
+      cb(null, postsData)
+    } catch (err) {
+      cb(err)
+    }
   }
 }
 

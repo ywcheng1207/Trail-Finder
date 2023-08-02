@@ -76,7 +76,7 @@ const adminServices = {
       })
       if (!userUpdate) {
         const err = new Error('Update fail')
-        err.status = 404
+        err.status = 500
         throw err
       }
       const userData = {
@@ -102,7 +102,7 @@ const adminServices = {
         throw err
       }
       if (user.isSuspended === false) {
-        const err = new Error('The user has already lifted the suspension!')
+        const err = new Error('This user is now able to use!')
         err.status = 404
         throw err
       }
@@ -111,7 +111,7 @@ const adminServices = {
       })
       if (!userUpdate) {
         const err = new Error('Update fail')
-        err.status = 404
+        err.status = 500
         throw err
       }
       const userData = {

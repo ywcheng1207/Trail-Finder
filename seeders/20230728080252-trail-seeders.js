@@ -15,7 +15,9 @@ module.exports = {
         }
       })
 
+      // 從現有的 JSON 檔案中讀取徑路資料
       const newTrails = trailData.filter(trail => !existingTrails.some(existingTrail => existingTrail.title === trail.title))
+      // 檢查是否有新徑路需要處理
       if (newTrails.length > 0) {
         // 使用 Promise.all 等待所有 trails 被建立與處理
         await Promise.all(newTrails.map(async newTrail => {

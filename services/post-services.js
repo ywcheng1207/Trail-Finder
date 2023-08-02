@@ -202,11 +202,42 @@ const postServices = {
       })
       if (!post) {
         const err = new Error('Posted post fail!')
-        err.status = 404
+        err.status = 500
         throw err
       }
       cb(null, {
         message: 'Post successfully sent.',
+        userId: userId,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+      })
+    } catch (err) {
+      cb(err)
+    }
+  },
+  postTempPost: async (req, cb) => {
+    try {
+      const userId = req.user.id
+      const { title, category, description, difficulty, recommend } = req.body
+      const { file } = req
+      const filePath = await imgurFileHandler(file)
+      const post = await Post.create({
+        title: title,
+        category: category,
+        description: description,
+        image: filePath || null,
+        difficulty: difficulty,
+        recommend: recommend,
+        inProgress: true,
+        userId: userId
+      })
+      if (!post) {
+        const err = new Error('Posted post fail!')
+        err.status = 500
+        throw err
+      }
+      cb(null, {
+        message: 'Temp post successfully sent.',
         userId: userId,
         createdAt: post.createdAt,
         updatedAt: post.updatedAt,

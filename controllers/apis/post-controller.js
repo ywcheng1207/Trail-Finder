@@ -7,6 +7,9 @@ const postController = {
   getAllPosts: (req, res, next) => {
     postServices.getAllPosts(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   },
+  postPost: (req, res, next) => {
+    postServices.postPost(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
 }
 
 module.exports = postController

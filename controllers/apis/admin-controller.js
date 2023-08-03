@@ -19,6 +19,9 @@ const adminController = {
   sendNotify: (req, res, next) => {
     adminServices.sendNotify(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   },
+  deletePost: (req, res, next) => {
+    adminServices.deletePost(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
 }
 
 module.exports = adminController

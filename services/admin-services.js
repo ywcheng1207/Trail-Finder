@@ -149,6 +149,23 @@ const adminServices = {
     } catch (err) {
       cb(err)
     }
+  },
+  deletePost: async (req, cb) => {
+    try {
+      const postId = req.params.postId
+      const post = await Post.findOne({
+        where: { id: postId, inProgress: false }
+      })
+      if (!post) {
+        const err = new Error('Post does not exist!')
+        err.status = 404
+        throw err
+      }
+      await post.destroy()
+      cb(null, { message: 'Post deleted successfully.' })
+    } catch (err) {
+      cb(err)
+    }
   }
 }
 

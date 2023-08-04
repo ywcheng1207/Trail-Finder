@@ -11,7 +11,7 @@ router.post('/users/signin', signInAuth, isUser, userController.signIn)
 router.post('/users', userController.signUp)
 
 router.use('/users', authenticated, users)
-router.use('/posts', authenticated, posts)
+router.use('/posts', posts)
 
 router.use('/', apiErrorHandler)
 router.use('/', (req, res) => res.send('this is home page.'))

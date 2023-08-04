@@ -5,6 +5,7 @@ const { imgurFileHandler } = require('../helpers/file-heplers')
 const postServices = {
   getPost: async (req, cb) => {
     try {
+      const userId = req?.user ? req.user.id : 0
       const postId = req.params.postId
       const post = await Post.findByPk(postId ,{
         include: [
@@ -16,7 +17,7 @@ const postServices = {
               'avatar',
               [
                 sequelize.literal(
-                  `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = User.id AND Followships.followerId = ${req.user.id})`
+                  `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = User.id AND Followships.followerId = ${userId})`
                 ),
                 'isFollow'
               ]
@@ -48,13 +49,13 @@ const postServices = {
           ],
           [
             sequelize.literal(
-              `(SELECT COUNT(*) FROM Favorites WHERE Favorites.postId = Post.id AND Favorites.userId = ${req.user.id})`
+              `(SELECT COUNT(*) FROM Favorites WHERE Favorites.postId = Post.id AND Favorites.userId = ${userId})`
             ),
             'isFavorite'
           ],
           [
             sequelize.literal(
-              `(SELECT COUNT(*) FROM Likes WHERE Likes.postId = Post.id AND Likes.userId = ${req.user.id})`
+              `(SELECT COUNT(*) FROM Likes WHERE Likes.postId = Post.id AND Likes.userId = ${userId})`
             ),
             'isLike'
           ]
@@ -74,6 +75,7 @@ const postServices = {
   },
   getPosts: async (req, cb) => {
     try {
+      const userId = req?.user ? req.user.id : 0
       const limit = Number(req.query.limit) || null
       const posts = await Post.findAll({
         where: { inProgress: false },
@@ -104,13 +106,13 @@ const postServices = {
             ],
             [
               sequelize.literal(
-                `(SELECT COUNT(*) FROM Favorites WHERE Favorites.postId = Post.id AND Favorites.userId = ${req.user.id})`
+                `(SELECT COUNT(*) FROM Favorites WHERE Favorites.postId = Post.id AND Favorites.userId = ${userId})`
               ),
               'isFavorite'
             ],
             [
               sequelize.literal(
-                `(SELECT COUNT(*) FROM Likes WHERE Likes.postId = Post.id AND Likes.userId = ${req.user.id})`
+                `(SELECT COUNT(*) FROM Likes WHERE Likes.postId = Post.id AND Likes.userId = ${userId})`
               ),
               'isLike'
             ],
@@ -131,6 +133,7 @@ const postServices = {
   },
   getAllPosts: async (req, cb) => {
     try {
+      const userId = req?.user ? req.user.id : 0
       const allPosts = await Post.findAll({
         include: [
           { model: User, attributes: ['id', 'name', 'avatar'] }
@@ -160,13 +163,13 @@ const postServices = {
           ],
           [
             sequelize.literal(
-              `(SELECT COUNT(*) FROM Favorites WHERE Favorites.postId = Post.id AND Favorites.userId = ${req.user.id})`
+              `(SELECT COUNT(*) FROM Favorites WHERE Favorites.postId = Post.id AND Favorites.userId = ${userId})`
             ),
             'isFavorite'
           ],
           [
             sequelize.literal(
-              `(SELECT COUNT(*) FROM Likes WHERE Likes.postId = Post.id AND Likes.userId = ${req.user.id})`
+              `(SELECT COUNT(*) FROM Likes WHERE Likes.postId = Post.id AND Likes.userId = ${userId})`
             ),
             'isLike'
           ],

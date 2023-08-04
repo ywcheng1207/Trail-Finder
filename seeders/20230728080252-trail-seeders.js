@@ -25,13 +25,20 @@ module.exports = {
           const gpxPath = `./path/${newTrail.title}.gpx`
           const gpxData = fs.readFileSync(gpxPath, 'utf8')
 
-          // 將 gpxData 解析為 JSON
-          const gpxJson = gpxServices.parseGpxToJson(gpxData)
+          // 將 gpxData 解析為 JSON，使用 await 等待 Promise 完成
+          const gpxJson = await gpxServices.parseGpxToJson(gpxData, (err, jsonObj) => {
+            if (err) {
+              console.error('Error while parsing GPX XML:', err)
+              throw new Error('Error while parsing GPX XML')
+            } else {
+              return jsonObj
+            }
+          })
 
           // 建立包含處理後的 gpx 與其他屬性的新物件
           const formattedTrail = {
             ...newTrail,
-            gpx: JSON.stringify(gpxJson)
+            gpx: gpxJson
           }
 
           // 在資料庫中建立 trails

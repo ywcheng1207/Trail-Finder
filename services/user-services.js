@@ -26,7 +26,7 @@ const userServices = {
   signUp: async (req, cb) => {
     try {
       const { name, email, password, passwordCheck } = req.body
-      if (password != passwordCheck) {
+      if (password !== passwordCheck) {
         const err = new Error('Passwords do not match!')
         err.status = 404
         throw err
@@ -43,7 +43,8 @@ const userServices = {
       const newUser = await User.create({
         name: name,
         email: email,
-        password: hash
+        password: hash,
+        role: "user"
       })
       delete newUser.dataValues.password // 不確定有沒有更好移除密碼的方法，先湊合著用
       cb(null, { user: newUser })

@@ -5,7 +5,7 @@ const { imgurFileHandler } = require('../helpers/file-heplers')
 const postServices = {
   getPost: async (req, cb) => {
     try {
-      const userId = req?.user ? req.user.id : 0
+      const userId = req.user ? req.user.id : 0
       const postId = req.params.postId
       const post = await Post.findByPk(postId ,{
         include: [

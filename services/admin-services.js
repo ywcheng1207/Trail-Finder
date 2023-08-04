@@ -161,8 +161,9 @@ const adminServices = {
         err.status = 404
         throw err
       }
+      const postTitle = post.title
       await post.destroy()
-      cb(null, { message: 'Post deleted successfully.' })
+      cb(null, { message: 'Post deleted successfully.', postTitle: postTitle })
     } catch (err) {
       cb(err)
     }

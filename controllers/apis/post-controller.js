@@ -19,6 +19,9 @@ const postController = {
   getTempPost: (req, res, next) => {
     postServices.getTempPost(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   },
+  addLike: (req, res, next) => {
+    postServices.addLike(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
 }
 
 module.exports = postController

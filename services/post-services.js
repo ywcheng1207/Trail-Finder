@@ -1,5 +1,5 @@
 const sequelize = require('sequelize')
-const { User, Post } = require('../models')
+const { User, Post, Like } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-heplers')
 
 const postServices = {
@@ -284,6 +284,37 @@ const postServices = {
       cb(err)
     }
   },
+  addLike: async (req, cb) => {
+    try {
+      const userId = req.user.id
+      const postId = req.body.postId
+      const [post, like] = await Promise.all([
+        Post.findOne({
+          where: { id: postId, inProgress: false }
+        }),
+        Like.findOne({
+          where: { userId: userId, postId: postId }
+        })
+      ])
+      if (!post) {
+        const err = new Error('Cannot find post!')
+        err.status = 404
+        throw err
+      }
+      if (like) {
+        const err = new Error('You already like this post!')
+        err.status = 404
+        throw err
+      }
+      const likePost = await Like.create({
+        userId: userId,
+        postId: postId
+      })
+      cb(null, likePost)
+      } catch (err) {
+      cb(err)
+    }
+  },
   editPost: async (req, cb) => {
     try {
       const currentUserId = req.user.id
@@ -315,6 +346,37 @@ const postServices = {
         recommend: recommend || post.recommend
       })
       cb(null, editPost)
+    } catch (err) {
+      cb(err)
+    }
+  },
+  deleteLike: async (req, cb) => {
+    try {
+      const userId = req.user.id
+      const postId = req.params.postId
+      const [post, like] = await Promise.all([
+        Post.findOne({
+          where: { id: postId, inProgress: false }
+        }),
+        Like.findOne({
+          where: { userId: userId, postId: postId }
+        })
+      ])
+      if (!post) {
+        const err = new Error('Cannot find post!')
+        err.status = 404
+        throw err
+      }
+      if (!like) {
+        const err = new Error('You have not liked this post!')
+        err.status = 404
+        throw err
+      }
+      await like.destroy()
+      cb(null, { 
+        message: 'Like deleted successfully', 
+        likeId: like.id, 
+        postId: postId 
     } catch (err) {
       cb(err)
     }

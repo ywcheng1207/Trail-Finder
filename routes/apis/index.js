@@ -18,7 +18,7 @@ router.post('/users', userController.signUp)
 
 router.use('/trails', trails)
 router.use('/users', authenticated, users)
-router.use('/posts', authenticated, posts)
+router.use('/posts', posts)
 router.use('/followships', authenticated, followships)
 router.use('/admin', authenticated, isAdmin, admin)
 router.use('/users', authenticated, isUser, users)

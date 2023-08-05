@@ -314,6 +314,38 @@ const postServices = {
     } catch (err) {
       cb(err)
     }
+  },
+  deleteCollect: async (req, cb) => {
+    try {
+      const userId = req.user.id
+      const postId = req.params.postId
+      const [post, favorite] = await Promise.all([
+        Post.findOne({
+          where: { id: postId, inProgress: false }
+        }),
+        Favorite.findOne({
+          where: { userId: userId, postId: postId }
+        })
+      ])
+      if (!post) {
+        const err = new Error('Cannot find post!')
+        err.status = 404
+        throw err
+      }
+      if (!favorite) {
+        const err = new Error('You have not favorited this post!')
+        err.status = 404
+        throw err
+      }
+      await favorite.destroy()
+      cb(null, {
+        message: 'Favorite deleted successfully',
+        FavoriteId: Favorite.id,
+        postId: postId
+      })
+    } catch (err) {
+      cb(err)
+    }
   }
 }
 

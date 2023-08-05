@@ -22,6 +22,9 @@ const postController = {
   addCollect: (req, res, next) => {
     postServices.addCollect(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   },
+  deleteCollect: (req, res, next) => {
+    postServices.deleteCollect(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
 }
 
 module.exports = postController

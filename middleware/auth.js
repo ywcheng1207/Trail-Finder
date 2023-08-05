@@ -40,9 +40,18 @@ const authenticated = (req, res, next) => {
   })(req, res, next)
 }
 
+const optionalAuthenticated = (req, res, next) => {
+  passport.authenticate('jwt', { session: false }, async (err, user) => {
+    if (err) return res.status(401).json({ status: 'error', message: 'unauthorized' })
+    if (user) req.user = await user
+    next()
+  })(req, res, next)
+}
+
 module.exports = {
   signInAuth,
   isUser,
   isAdmin,
-  authenticated
+  authenticated,
+  optionalAuthenticated
 }

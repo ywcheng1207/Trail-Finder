@@ -6,7 +6,7 @@ const followshipController = {
   },
   deleteFollowing: (req, res, next) => {
     followshipServices.deleteFollowing(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
-  },
+  }
 }
 
 module.exports = followshipController

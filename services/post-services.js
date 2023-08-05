@@ -1,6 +1,7 @@
 const sequelize = require('sequelize')
 const { User, Post } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-heplers')
+const { Op } = require('sequelize')
 
 const postServices = {
   getPost: async (req, cb) => {
@@ -282,6 +283,34 @@ const postServices = {
       cb(null, postsData)
     } catch (err) {
       cb(err)
+    }
+  },
+  searchPostByKeyword: async (req, cb) => {
+    try {
+      const keyword = req.query.keyword
+      const posts = await Post.findAll({
+        where: {
+          [Op.or]: [
+            {
+              title: {
+                [Op.like]: `%${keyword}%`
+              },
+              category: {
+                [Op.like]: `%${keyword}%`
+              },
+              description: {
+                [Op.like]: `%${keyword}%`
+              },
+            }
+          ],
+          inProgress: false
+        },
+        order: [['createdAt', 'DESC']]
+      })
+      const searchData = posts.map(post => post.toJSON())
+      cb(null, searchData)
+    } catch (err) {
+      cb(err)      
     }
   }
 }

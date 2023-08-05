@@ -6,6 +6,7 @@ const upload = require('../../../middleware/multer')
 
 router.get('/:postId/cache', postController.getTempPost)
 router.get('/all', postController.getAllPosts)
+router.get('/search', postController.searchPostByKeyword)
 router.get('/:postId', postController.getPost)
 router.post('/cache', upload.single('image'), postController.postTempPost)
 router.post('/', upload.single('image'), postController.postPost)

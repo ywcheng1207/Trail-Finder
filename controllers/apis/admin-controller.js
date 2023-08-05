@@ -21,7 +21,7 @@ const adminController = {
   },
   deletePost: (req, res, next) => {
     adminServices.deletePost(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
-  },
+  }
 }
 
 module.exports = adminController

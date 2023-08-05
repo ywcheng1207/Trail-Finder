@@ -311,7 +311,8 @@ const postServices = {
         category: category,
         content: content,
         userId: userId,
-        postId: postId
+        postId: postId,
+        isSolved: false
       })
       cb(null, newReport)
     } catch (err) {

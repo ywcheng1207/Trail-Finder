@@ -1,6 +1,6 @@
 const sequelize = require('sequelize')
 const jwt = require('jsonwebtoken')
-const { User, Post, Favorite, Followship, Notification } = require('../models')
+const { User, Post, Favorite, Followship, Notification, Report } = require('../models')
 
 const adminServices = {
   signIn: async (req, cb) => {
@@ -164,6 +164,20 @@ const adminServices = {
       const postTitle = post.title
       await post.destroy()
       cb(null, { message: 'Post deleted successfully.', postTitle: postTitle })
+    } catch (err) {
+      cb(err)
+    }
+  },
+  getAllReports: async (req, cb) => {
+    try {
+      const reports = await Report.findAll({
+        include: [
+          { model: User, attributes: ['id', 'name'] }
+        ],
+        order: [['createdAt', 'DESC']]
+      })
+      const reportsData = reports.map(report => report.toJSON())
+      cb(null, reportsData)
     } catch (err) {
       cb(err)
     }

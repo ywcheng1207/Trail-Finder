@@ -1,5 +1,5 @@
 const sequelize = require('sequelize')
-const { User, Post } = require('../models')
+const { User, Post, Favorite } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-heplers')
 
 const postServices = {
@@ -280,6 +280,37 @@ const postServices = {
         ...tempPost.toJSON()
       }
       cb(null, postsData)
+    } catch (err) {
+      cb(err)
+    }
+  },
+  addCollect: async (req, cb) => {
+    try {
+      const userId = req.user.id
+      const postId = req.body.postId
+      const [post, favorite] = await Promise.all([
+        Post.findOne({
+          where: { id: postId, inProgress: false }
+        }),
+        Favorite.findOne({
+          where: { userId: userId, postId: postId }
+        })
+      ])
+      if (!post) {
+        const err = new Error('Cannot find post!')
+        err.status = 404
+        throw err
+      }
+      if (favorite) {
+        const err = new Error('You already favorite this post!')
+        err.status = 404
+        throw err
+      }
+      const newFavorite = await Favorite.create({
+        userId: userId,
+        postId: postId
+      })
+      cb(null, newFavorite)
     } catch (err) {
       cb(err)
     }

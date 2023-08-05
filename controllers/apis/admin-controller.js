@@ -25,6 +25,9 @@ const adminController = {
   getAllReports: (req, res, next) => {
     adminServices.getAllReports(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   },
+  editReportSolved: (req, res, next) => {
+    adminServices.editReportSolved(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
 }
 
 module.exports = adminController

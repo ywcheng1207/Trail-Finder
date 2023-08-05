@@ -181,6 +181,25 @@ const adminServices = {
     } catch (err) {
       cb(err)
     }
+  },
+  editReportSolved: async (req, cb) => {
+    try {
+      const reportId = req.params.reportId
+      const report = await Report.findOne({
+        where: { id: reportId, isSolved: false }
+      })
+      if (!report) {
+        const err = new Error('Cannot find report!')
+        err.status = 404
+        throw err
+      }
+      const updateReport = await report.update({
+        isSolved: true
+      })
+      cb(null, updateReport)
+    } catch (err) {
+      cb(err)
+    }
   }
 }
 

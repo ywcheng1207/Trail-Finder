@@ -22,6 +22,9 @@ const postController = {
   addLike: (req, res, next) => {
     postServices.addLike(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   },
+  deleteLike: (req, res, next) => {
+    postServices.deleteLike(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
 }
 
 module.exports = postController

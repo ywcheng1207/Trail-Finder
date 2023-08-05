@@ -314,6 +314,38 @@ const postServices = {
     } catch (err) {
       cb(err)
     }
+  },
+  deleteLike: async (req, cb) => {
+    try {
+      const userId = req.user.id
+      const postId = req.params.postId
+      const [post, like] = await Promise.all([
+        Post.findOne({
+          where: { id: postId, inProgress: false }
+        }),
+        Like.findOne({
+          where: { userId: userId, postId: postId }
+        })
+      ])
+      if (!post) {
+        const err = new Error('Cannot find post!')
+        err.status = 404
+        throw err
+      }
+      if (!like) {
+        const err = new Error('You have not liked this post!')
+        err.status = 404
+        throw err
+      }
+      await like.destroy()
+      cb(null, { 
+        message: 'Like deleted successfully', 
+        likeId: like.id, 
+        postId: postId 
+      })
+    } catch (err) {
+      cb(err)
+    }
   }
 }
 

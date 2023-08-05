@@ -4,6 +4,7 @@ const router = express.Router()
 const postController = require('../../../controllers/apis/post-controller')
 const upload = require('../../../middleware/multer')
 
+router.delete('/likes/:postId', postController.deleteLike)
 router.get('/:postId/cache', postController.getTempPost)
 router.post('/likes', postController.addLike)
 router.get('/all', postController.getAllPosts)

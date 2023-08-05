@@ -283,6 +283,68 @@ const postServices = {
     } catch (err) {
       cb(err)
     }
+  },
+  editPost: async (req, cb) => {
+    try {
+      const currentUserId = req.user.id
+      const postId = req.params.postId
+      const { title, category, description, difficulty, recommend } = req.body
+      const { file } = req
+      const [post, filePaht] = await Promise.all([
+        Post.findByPk(postId),
+        imgurFileHandler(file)
+      ])
+      if (!post) {
+        const err = new Error('Post dose not exists!')
+        err.status = 404
+        throw err
+      }
+      const postJson = { ...post.toJSON() }
+      const postUser = postJson.userId
+      if (postUser !== currentUserId) {
+        const err = new Error('Cannot edit other users Post!')
+        err.status = 404
+        throw err
+      }
+      const editPost = await post.update({
+        title: title || post.title,
+        category: category || post.category,
+        description: description || post.description,
+        image: filePaht || post.image,
+        difficulty: difficulty || post.difficulty,
+        recommend: recommend || post.recommend
+      })
+      cb(null, editPost)
+    } catch (err) {
+      cb(err)
+    }
+  },
+  deletePost: async(req, cb) => {
+    try {
+      const currentUserId = req.user.id
+      const postId = req.params.postId
+      const post= await Post.findByPk(postId)
+      if (!post) {
+        const err = new Error('Post dose not exists!')
+        err.status = 404
+        throw err
+      }
+      const postJson = { ...post.toJSON() }
+      const postUser = postJson.userId
+      if (postUser !== currentUserId) {
+        const err = new Error('Cannot delete other users Post!')
+        err.status = 404
+        throw err
+      }
+      const editPost = await post.destroy()
+      cb(null, { 
+        message: 'Post deleted successfully.', 
+        postTitle: postJson.title,
+        userId: postJson.id
+      })
+    } catch (err) {
+      cb(err)
+    }
   }
 }
 

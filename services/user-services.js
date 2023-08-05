@@ -311,6 +311,37 @@ const userServices = {
     } catch (err) { 
       cb(err)
     }
+  },
+  isReadNotification: async (req, cb) => {
+    try {
+      const currentUserId = req.user.id
+      const notificationId = req.params.notificationId
+      const notification = await Notification.findByPk(notificationId)
+      if (!notification) {
+        const err = new Error('Notification dose not exists!')
+        err.status = 404
+        throw err
+      }
+      const notificationJson = { ...notification.toJSON() }
+      const notificationUser = notificationJson.userId
+      if (notificationUser !== currentUserId) {
+        const err = new Error('Cannot isRead other users notification!')
+        err.status = 404
+        throw err
+      }
+      if (notificationJson.isRead === true) {
+        const err = new Error('Notification has already been read!')
+        err.status = 404
+        throw err
+      }
+      const isReadNotification = await notification.update({
+        isRead: true
+      })
+      console.log(isReadNotification)
+      cb(null, isReadNotification)
+    } catch (err) {
+      cb(err)
+    }
   }
 }
 

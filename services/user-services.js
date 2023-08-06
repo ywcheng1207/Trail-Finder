@@ -32,7 +32,7 @@ const userServices = {
         throw err
       }
 
-      const user = await User.findOne({ where: { email: email } })
+      const user = await User.findOne({ where: { email } })
       if (user) {
         const err = new Error('Email already exists!')
         err.status = 404
@@ -41,14 +41,13 @@ const userServices = {
 
       const hash = await bcrypt.hash(password, 10)
       const newUser = await User.create({
-        name: name,
-        email: email,
+        name,
+        email,
         password: hash,
-        role: "user"
+        role: 'user'
       })
       delete newUser.dataValues.password // 不確定有沒有更好移除密碼的方法，先湊合著用
       cb(null, { user: newUser })
-
     } catch (err) {
       cb(err)
     }
@@ -57,9 +56,9 @@ const userServices = {
     try {
       const userId = req.params.userId
       const posts = await Post.findAll({
-        where: { userId: userId },
+        where: { userId },
         include: [
-          { model: User, attributes: [ 'id', 'avatar' ] }
+          { model: User, attributes: ['id', 'avatar'] }
         ],
         attributes: [
           'id',
@@ -94,7 +93,7 @@ const userServices = {
       if (name && name.length > 50) throw new Error('Name length should <= 50')
       if (introduction && introduction.length > 160) throw new Error('Introduction length should <= 160')
 
-      const [user, filePaht] = await Promise.all ([
+      const [user, filePaht] = await Promise.all([
         User.findByPk(userId),
         imgurFileHandler(file)
       ])
@@ -108,7 +107,7 @@ const userServices = {
         name: name || user.name,
         avatar: filePaht || user.avatar,
         password: password ? await bcrypt.hash(password, 10) : user.password,
-        introduction: introduction || user.introduction,
+        introduction: introduction || user.introduction
       })
       cb(null, { message: 'User info edited successfully' })
     } catch (err) {
@@ -151,7 +150,7 @@ const userServices = {
               `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = ${userId} AND Followships.followerId = ${req.user.id})`
             ),
             'isFollow'
-          ],
+          ]
         ]
       })
       if (!user) {
@@ -197,7 +196,7 @@ const userServices = {
               `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = following.id AND Followships.followerId = ${req.user.id})`
             ),
             'isFollow'
-          ],
+          ]
         ]
       })
       const followingsData = followings.map(function (following) {
@@ -239,7 +238,7 @@ const userServices = {
               `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = follower.id AND Followships.followerId = ${req.user.id})`
             ),
             'isFollow'
-          ],
+          ]
         ]
       })
       const followersData = followers.map(function (follower) {
@@ -256,7 +255,7 @@ const userServices = {
     try {
       const userId = req.params.userId
       const favorite = await Favorite.findAll({
-        where: { userId: userId },
+        where: { userId },
         include: [
           {
             model: Post,
@@ -271,14 +270,14 @@ const userServices = {
               'userId',
               'createdAt',
               'updatedAt'
-            ],
+            ]
           }
         ],
         attributes: [
           'id',
-          'postId',
+          'postId'
         ],
-        order: [['createdAt', 'DESC']],
+        order: [['createdAt', 'DESC']]
       })
       const favoritePost = favorite.map(post => {
         const postJson = post.toJSON()
@@ -288,7 +287,7 @@ const userServices = {
         }
         return postJson
       })
-      cb(null, { favoritePost: favoritePost })
+      cb(null, { favoritePost })
     } catch (err) {
       cb(err)
     }
@@ -303,12 +302,43 @@ const userServices = {
         throw err
       }
       const notifications = await Notification.findAll({
-        where: { userId: userId },
+        where: { userId },
         order: [['createdAt', 'DESC']]
       })
       const notifyData = notifications.map(notify => notify.toJSON())
       cb(null, notifyData)
-    } catch (err) { 
+    } catch (err) {
+      cb(err)
+    }
+  },
+  isReadNotification: async (req, cb) => {
+    try {
+      const currentUserId = req.user.id
+      const notificationId = req.params.notificationId
+      const notification = await Notification.findByPk(notificationId)
+      if (!notification) {
+        const err = new Error('Notification dose not exists!')
+        err.status = 404
+        throw err
+      }
+      const notificationJson = { ...notification.toJSON() }
+      const notificationUser = notificationJson.userId
+      if (notificationUser !== currentUserId) {
+        const err = new Error('Cannot isRead other users notification!')
+        err.status = 404
+        throw err
+      }
+      if (notificationJson.isRead === true) {
+        const err = new Error('Notification has already been read!')
+        err.status = 404
+        throw err
+      }
+      const isReadNotification = await notification.update({
+        isRead: true
+      })
+      console.log(isReadNotification)
+      cb(null, isReadNotification)
+    } catch (err) {
       cb(err)
     }
   }

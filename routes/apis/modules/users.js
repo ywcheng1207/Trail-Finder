@@ -4,6 +4,7 @@ const router = express.Router()
 const userController = require('../../../controllers/apis/user-controller')
 const upload = require('../../../middleware/multer')
 
+router.put('/notifications/:notificationId', userController.isReadNotification)
 router.get('/:userId/favorites/post', userController.getUserFavoritePost)
 router.get('/:userId/notifications', userController.getUserNotifications)
 router.get('/:userId/followings', userController.getUserFollowings)

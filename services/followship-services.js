@@ -1,5 +1,4 @@
-const sequelize = require('sequelize')
-const { User, Post, Favorite, Followship } = require('../models')
+const { User, Followship } = require('../models')
 
 const followshipServices = {
   addFollowing: async (req, cb) => {

@@ -25,6 +25,18 @@ const postController = {
   deleteCollect: (req, res, next) => {
     postServices.deleteCollect(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   },
+  addLike: (req, res, next) => {
+    postServices.addLike(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
+  deleteLike: (req, res, next) => {
+    postServices.deleteLike(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
+  editPost: (req, res, next) => {
+    postServices.editPost(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
+  deletePost: (req, res, next) => {
+    postServices.deletePost(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  }
 }
 
 module.exports = postController

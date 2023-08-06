@@ -28,6 +28,9 @@ const userController = {
   getUserNotifications: (req, res, next) => {
     userServices.getUserNotifications(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   },
+  isReadNotification: (req, res, next) => {
+    userServices.isReadNotification(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  }
 }
 
 module.exports = userController

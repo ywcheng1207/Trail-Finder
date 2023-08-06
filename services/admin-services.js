@@ -1,4 +1,3 @@
-const sequelize = require('sequelize')
 const jwt = require('jsonwebtoken')
 const { User, Post, Favorite, Followship, Notification, Report } = require('../models')
 
@@ -84,8 +83,8 @@ const adminServices = {
       }
       cb(null, {
         message: 'Suspend successfully',
-        userId: userData.id, 
-        createdAt: userData.createdAt, 
+        userId: userData.id,
+        createdAt: userData.createdAt,
         updatedAt: userData.updatedAt
       })
     } catch (err) {
@@ -138,7 +137,7 @@ const adminServices = {
         throw err
       }
       const notification = await Notification.create({
-        notify: notify,
+        notify,
         isRead: false,
         userId: user.id
       })
@@ -163,7 +162,7 @@ const adminServices = {
       }
       const postTitle = post.title
       await post.destroy()
-      cb(null, { message: 'Post deleted successfully.', postTitle: postTitle })
+      cb(null, { message: 'Post deleted successfully.', postTitle })
     } catch (err) {
       cb(err)
     }

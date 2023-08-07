@@ -1,5 +1,5 @@
 const sequelize = require('sequelize')
-const { User, Post, Like, Favorite } = require('../models')
+const { User, Post, Like, Favorite, Report } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-heplers')
 const { Op } = require('sequelize')
 
@@ -472,6 +472,41 @@ const postServices = {
         FavoriteId: Favorite.id,
         postId: postId
       })
+    } catch (err) {
+      cb(err)
+    }
+  },
+  addReport: async (req, cb) => {
+    try {
+      const userId = req.user.id
+      const postId = req.body.postId
+      const { category, content } = req.body
+      const [post, report] = await Promise.all([
+        Post.findOne({
+          where: { id: postId, inProgress: false }
+        }),
+        Report.findOne({
+          where: { userId: userId, postId: postId }
+        })
+      ])
+      if (!post) {
+        const err = new Error('Cannot find post!')
+        err.status = 404
+        throw err
+      }
+      if (report) {
+        const err = new Error('You already reported this post!')
+        err.status = 404
+        throw err
+      }
+      const newReport = await Report.create({
+        category: category,
+        content: content,
+        userId: userId,
+        postId: postId,
+        isSolved: false
+      })
+      cb(null, newReport)
     } catch (err) {
       cb(err)
     }

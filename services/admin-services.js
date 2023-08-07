@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const { User, Post, Notification } = require('../models')
+const { User, Post, Favorite, Followship, Notification, Report } = require('../models')
 
 const adminServices = {
   signIn: async (req, cb) => {
@@ -163,6 +163,44 @@ const adminServices = {
       const postTitle = post.title
       await post.destroy()
       cb(null, { message: 'Post deleted successfully.', postTitle })
+    } catch (err) {
+      cb(err)
+    }
+  },
+  getAllReports: async (req, cb) => {
+    try {
+      const reports = await Report.findAll({
+        include: [
+          { model: Post,
+            include: [
+              { model: User, attributes: ['id', 'name'] }
+            ],
+            attributes: ['id', 'title'] 
+          }
+        ],
+        order: [['createdAt', 'DESC']]
+      })
+      const reportsData = reports.map(report => report.toJSON())
+      cb(null, reportsData)
+    } catch (err) {
+      cb(err)
+    }
+  },
+  editReportSolved: async (req, cb) => {
+    try {
+      const reportId = req.params.reportId
+      const report = await Report.findOne({
+        where: { id: reportId, isSolved: false }
+      })
+      if (!report) {
+        const err = new Error('Cannot find report!')
+        err.status = 404
+        throw err
+      }
+      const updateReport = await report.update({
+        isSolved: true
+      })
+      cb(null, updateReport)
     } catch (err) {
       cb(err)
     }

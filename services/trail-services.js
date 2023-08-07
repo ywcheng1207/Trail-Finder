@@ -42,6 +42,55 @@ const trailServices = {
     } catch (err) {
       cb(err)
     }
+  },
+  getTrail: async (req, cb) => {
+    try {
+      const userId = req.user ? req.user.id : 0
+      const trailId = req.params.trailId
+      const trail = await Trail.findByPk(trailId, {
+        attributes: [
+          'id',
+          'title',
+          'category',
+          'introduction',
+          'location',
+          'distance',
+          'trailType',
+          'trailFormat',
+          'altitude',
+          'heightDiff',
+          'trailCondition',
+          'duration',
+          'difficulty',
+          'parkOwnership',
+          'permitRequiredForEntry',
+          'permitRequiredForParkAccess',
+          'createdAt',
+          'updatedAt',
+          [
+            sequelize.literal(
+              '(SELECT COUNT(*) FROM Favorites WHERE Favorites.trailId = Trail.id)'
+            ),
+            'favoriteCount'
+          ],
+          [
+            sequelize.literal(
+              `(SELECT COUNT(*) FROM Favorites WHERE Favorites.trailId = Trail.id AND Favorites.userId = ${userId})`
+            ),
+            'isFavorite'
+          ]
+        ],
+        order: [['createdAt', 'DESC']]
+      })
+      const trailData = {
+        ...trail.toJSON()
+      }
+      trailData.favoriteCount = Boolean(trailData.favoriteCount)
+      trailData.isFavorite = Boolean(trailData.isFavorite)
+      cb(null, trailData)
+    } catch (err) {
+      cb(err)
+    }
   }
 }
 

@@ -6,6 +6,9 @@ const trailController = {
   },
   getTrailsGPX: (req, res, next) => {
     trailServices.getTrailsGPX(req, (err, data) => err ? next(err) : res.json(data))
+  },
+  getTrail: (req, res, next) => {
+    trailServices.getTrail(req, (err, data) => err ? next(err) : res.json(data))
   }
 }
 

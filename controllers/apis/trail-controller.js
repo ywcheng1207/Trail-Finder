@@ -9,6 +9,9 @@ const trailController = {
   },
   searchTrailByKeyword: (req, res, next) => {
     trailServices.searchTrailByKeyword(req, (err, data) => err ? next(err) : res.json(data))
+  },
+  getTopTrails: (req, res, next) => {
+    trailServices.getTopTrails(req, (err, data) => err ? next(err) : res.json(data))
   }
 }
 

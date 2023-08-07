@@ -145,6 +145,56 @@ const trailServices = {
     } catch (err) {
       cb(err)
     }
+  },
+  getTopTrails: async (req, cb) => {
+    try {
+      const userId = req?.user ? req.user.id : 0
+      const sort = req.query.sort || ''
+      const limit = Number(req.query.limit) || null
+
+      const order = []
+      if (sort === 'favorites') {
+        order.push([sequelize.literal('favoriteCount'), 'DESC'])
+      }
+      order.push(['createdAt', 'DESC'])
+
+      const topTrails = await Trail.findAll({
+        attributes: [
+          'id',
+          'title',
+          'distance',
+          'duration',
+          'difficulty',
+          'image',
+          'createdAt',
+          'updatedAt',
+          [
+            sequelize.literal(
+              '(SELECT COUNT(*) FROM Favorites WHERE Favorites.trailId = Trail.id)'
+            ),
+            'favoriteCount'
+          ],
+          [
+            sequelize.literal(
+              `(SELECT COUNT(*) FROM Favorites WHERE Favorites.trailId = Trail.id AND Favorites.userId = ${userId})`
+            ),
+            'isFavorite'
+          ]
+        ],
+        order,
+        limit
+      })
+      const TrailData = topTrails
+        .map(trail => {
+          const trailJson = trail.toJSON()
+          trailJson.isFavorite = Boolean(trailJson.isFavorite)
+          return trailJson
+        })
+
+      cb(null, TrailData)
+    } catch (err) {
+      cb(err)
+    }
   }
 }
 

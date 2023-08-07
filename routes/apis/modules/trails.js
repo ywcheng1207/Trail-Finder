@@ -7,7 +7,6 @@ const { optionalAuthenticated } = require('../../../middleware/auth')
 
 router.get('/search', trailController.searchTrailByKeyword)
 router.get('/:trailId', optionalAuthenticated, trailController.getTrail)
-router.get('/', optionalAuthenticated, trailController.getTopTrails)
 router.get('/', optionalAuthenticated, trailController.getAllTrails)
 
 router.use('/', (req, res) => res.send('this is trail page.'))

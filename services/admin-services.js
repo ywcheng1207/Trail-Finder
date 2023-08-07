@@ -171,7 +171,12 @@ const adminServices = {
     try {
       const reports = await Report.findAll({
         include: [
-          { model: User, attributes: ['id', 'name'] }
+          { model: Post,
+            include: [
+              { model: User, attributes: ['id', 'name'] }
+            ],
+            attributes: ['id', 'title'] 
+          }
         ],
         order: [['createdAt', 'DESC']]
       })

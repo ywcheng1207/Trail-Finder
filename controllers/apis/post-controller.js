@@ -22,6 +22,9 @@ const postController = {
   addReport: (req, res, next) => {
     postServices.addReport(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   },
+  searchPostByKeyword: (req, res, next) => {
+    postServices.searchPostByKeyword(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
   addCollect: (req, res, next) => {
     postServices.addCollect(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   },

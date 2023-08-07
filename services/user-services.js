@@ -193,7 +193,7 @@ const userServices = {
           'updatedAt',
           [
             sequelize.literal(
-              `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = following.id AND Followships.followerId = ${req.user.id})`
+              `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = Following.id AND Followships.followerId = ${req.user.id})`
             ),
             'isFollow'
           ]

@@ -12,6 +12,9 @@ const trailController = {
   },
   postCondition: (req, res, next) => {
     trailServices.postCondition(req, (err, data) => err ? next(err) : res.json(data))
+  },
+  getConditions: (req, res, next) => {
+    trailServices.getConditions(req, (err, data) => err ? next(err) : res.json(data))
   }
 }
 

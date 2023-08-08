@@ -6,8 +6,8 @@ const trailController = require('../../../controllers/apis/trail-controller')
 const { authenticated, optionalAuthenticated } = require('../../../middleware/auth')
 
 router.post('/conditions/:trailId', authenticated, trailController.postCondition)
-
-router.get('/search', trailController.searchTrailByKeyword)
+router.get('/conditions/:trailId', optionalAuthenticated, trailController.getConditions)
+router.get('/search', optionalAuthenticated, trailController.searchTrailByKeyword)
 router.get('/:trailId', optionalAuthenticated, trailController.getTrail)
 router.get('/', optionalAuthenticated, trailController.getAllTrails)
 

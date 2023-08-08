@@ -1,5 +1,5 @@
 const sequelize = require('sequelize')
-const { Trail, Condition } = require('../models')
+const { Trail, Condition, User } = require('../models')
 const { Op } = require('sequelize')
 
 // const fs = require('fs')
@@ -163,7 +163,38 @@ const trailServices = {
         trailId,
         description: trailDescription
       })
-      cb(null, trailCondition)
+      cb(null, {
+        message: 'Conditions successfully created.',
+        userId,
+        trailId,
+        createdAt: trailCondition.createdAt,
+        updatedAt: trailCondition.updatedAt
+      })
+    } catch (err) {
+      cb(err)
+    }
+  },
+  getConditions: async (req, cb) => {
+    try {
+      const trailId = req.params.trailId
+      const conditions = await Condition.findAll({
+        where: { trailId },
+        include: [
+          { model: User, attributes: ['id', 'name', 'avatar'] }
+        ],
+        attributes: [
+          'id',
+          'description',
+          'createdAt',
+          'updatedAt'
+        ],
+        order: [['createdAt', 'DESC']]
+      })
+      const allConditions = conditions.map(condition => {
+        const allConditionsJson = condition.toJSON()
+        return allConditionsJson
+      })
+      cb(null, allConditions)
     } catch (err) {
       cb(err)
     }

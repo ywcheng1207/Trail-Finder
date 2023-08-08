@@ -3,7 +3,9 @@ const router = express.Router()
 
 const trailController = require('../../../controllers/apis/trail-controller')
 
-const { optionalAuthenticated } = require('../../../middleware/auth')
+const { authenticated, optionalAuthenticated } = require('../../../middleware/auth')
+
+router.post('/conditions/:trailId', authenticated, trailController.postCondition)
 
 router.get('/search', trailController.searchTrailByKeyword)
 router.get('/:trailId', optionalAuthenticated, trailController.getTrail)

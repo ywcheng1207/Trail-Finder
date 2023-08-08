@@ -1,5 +1,5 @@
 const sequelize = require('sequelize')
-const { Trail } = require('../models')
+const { Trail, Condition } = require('../models')
 const { Op } = require('sequelize')
 
 // const fs = require('fs')
@@ -142,6 +142,28 @@ const trailServices = {
         })
 
       cb(null, searchData)
+    } catch (err) {
+      cb(err)
+    }
+  },
+  postCondition: async (req, cb) => {
+    try {
+      const userId = req.user.id
+      const trailId = req.params.trailId
+      const trailDescription = req.body.description
+      const trail = await Trail.findByPk(trailId)
+
+      if (!trail) {
+        const err = new Error('This trail does not exist!')
+        err.status = 404
+        throw err
+      }
+      const trailCondition = await Condition.create({
+        userId,
+        trailId,
+        description: trailDescription
+      })
+      cb(null, trailCondition)
     } catch (err) {
       cb(err)
     }

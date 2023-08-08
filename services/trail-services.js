@@ -1,9 +1,8 @@
 const sequelize = require('sequelize')
 const { Trail, Condition, User, Favorite } = require('../models')
 const { Op } = require('sequelize')
-
-// const fs = require('fs')
-// const gpxServices = require('./gpx-services.js')
+const fs = require('fs')
+const { XMLBuilder } = require('fast-xml-parser')
 
 const trailServices = {
   getAllTrails: async (req, cb) => {
@@ -260,6 +259,53 @@ const trailServices = {
       })
     } catch (err) {
       cb(err)
+    }
+  },
+  getTrailsGPX: async (req, cb) => {
+    try {
+      const trailId = req.params.trailId
+      const trail = await Trail.findByPk(trailId, {
+        attributes: [
+          'id',
+          'title',
+          'gpx',
+          'createdAt',
+          'updatedAt'
+        ]
+      })
+      const gpxData = trail.gpx
+      const fileName = `${trail.title}.gpx`
+      const builderOptions = {
+        attributeNamePrefix: '@_',
+        attrNodeName: 'attr',
+        textNodeName: '#text',
+        ignoreAttributes: false,
+        cdataTagName: '__cdata',
+        cdataPositionChar: '\\c',
+        format: true,
+        indentBy: '  '
+      }
+      const builder = new XMLBuilder(builderOptions)
+      const gpxXml = builder.build(JSON.parse(gpxData))
+      const path = `./temp/${fileName}`
+
+      if (fs.existsSync(path)) {
+        console.log(`File ${path} already exists.`)
+      } else {
+        fs.writeFileSync(path, gpxXml, 'utf-8')
+        console.log(`File ${path} created successfully.`)
+      }
+      const fileContent = fs.readFileSync(path, 'utf-8')
+      const trailGpxData = {
+        id: trail.id,
+        title: trail.title,
+        createdAt: trail.createdAt,
+        updatedAt: trail.updatedAt,
+        gpx: fileContent
+      }
+      cb(null, trailGpxData)
+    } catch (err) {
+      cb(new Error('Error while parsing GPX XML'), null)
     }
   }
 }

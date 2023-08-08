@@ -10,6 +10,7 @@ router.get('/conditions/:trailId', optionalAuthenticated, trailController.getCon
 router.delete('/favorites/:trailId', authenticated, trailController.deleteFavoriteTrail)
 router.post('/favorites', authenticated, trailController.addFavoriteTrail)
 router.get('/search', optionalAuthenticated, trailController.searchTrailByKeyword)
+router.get('/gpx/:trailId', optionalAuthenticated, trailController.getTrailsGPX)
 router.get('/:trailId', optionalAuthenticated, trailController.getTrail)
 router.get('/', optionalAuthenticated, trailController.getAllTrails)
 

@@ -1,5 +1,5 @@
 // 操作fast-xml-parser
-const { XMLParser, XMLBuilder } = require('fast-xml-parser')
+const { XMLParser } = require('fast-xml-parser')
 
 const gpxServices = {
   // 解析GPX(xml)檔，並將解析後的檔案轉成JSON
@@ -24,7 +24,8 @@ const gpxServices = {
     }
     try {
       const parser = new XMLParser(parserOptions)
-      const jsonObj = parser.parse(gpxData)
+      const gpxObj = parser.parse(gpxData)
+      const jsonObj = JSON.stringify(gpxObj)
       if (callback) {
         callback(null, jsonObj) // 在完成後呼叫回調函式並傳遞結果
       }
@@ -34,26 +35,6 @@ const gpxServices = {
         callback(error, null) // 在出現錯誤時呼叫回調函式並傳遞錯誤
       }
       throw new Error('Error while parsing GPX XML')
-    }
-  },
-  parseJsonToGpx: (gpxJson, callback) => {
-    const builderOptions = {
-      attributeNamePrefix: '@_',
-      attrNodeName: 'attr',
-      textNodeName: '#text',
-      ignoreAttributes: false,
-      cdataTagName: '__cdata',
-      cdataPositionChar: '\\c',
-      format: true,
-      indentBy: '  '
-    }
-    try {
-      const builder = new XMLBuilder(builderOptions)
-      const gpxXml = builder.build(gpxJson)
-      callback(null, gpxXml)
-    } catch (error) {
-      console.error(error)
-      callback(new Error('Error while building GPX XML'), null)
     }
   }
 }

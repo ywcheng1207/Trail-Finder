@@ -7,8 +7,8 @@ const postController = {
   getPosts: (req, res, next) => {
     postServices.getPosts(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   },
-  getAllPosts: (req, res, next) => {
-    postServices.getAllPosts(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  getUserAllPosts: (req, res, next) => {
+    postServices.getUserAllPosts(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   },
   postPost: (req, res, next) => {
     postServices.postPost(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))

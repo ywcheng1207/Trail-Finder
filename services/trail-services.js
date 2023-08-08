@@ -9,7 +9,16 @@ const trailServices = {
   getAllTrails: async (req, cb) => {
     try {
       const userId = req?.user ? req.user.id : 0
-      const allTrails = await Trail.findAll({
+      const sort = req.query.sort || ''
+      const limit = Number(req.query.limit) || null
+
+      const order = []
+      if (sort === 'favorites') {
+        order.push([sequelize.literal('favoriteCount'), 'DESC'])
+      }
+      order.push(['createdAt', 'DESC'])
+
+      const topTrails = await Trail.findAll({
         attributes: [
           'id',
           'title',
@@ -32,14 +41,17 @@ const trailServices = {
             'isFavorite'
           ]
         ],
-        order: [['createdAt', 'DESC']]
+        order,
+        limit
       })
-      const allTrailData = allTrails.map(trail => {
-        const trailJson = trail.toJSON()
-        trailJson.isFavorite = Boolean(trailJson.isFavorite)
-        return trailJson
-      })
-      cb(null, allTrailData)
+      const TrailData = topTrails
+        .map(trail => {
+          const trailJson = trail.toJSON()
+          trailJson.isFavorite = Boolean(trailJson.isFavorite)
+          return trailJson
+        })
+
+      cb(null, TrailData)
     } catch (err) {
       cb(err)
     }

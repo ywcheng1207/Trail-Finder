@@ -229,6 +229,38 @@ const trailServices = {
     } catch (err) {
       cb(err)
     }
+  },
+  deleteFavoriteTrail: async (req, cb) => {
+    try {
+      const userId = req.user.id
+      const trailId = req.params.trailId
+      const [trail, favorite] = await Promise.all([
+        Trail.findOne({
+          where: { id: trailId }
+        }),
+        Favorite.findOne({
+          where: { userId, trailId }
+        })
+      ])
+      if (!trail) {
+        const err = new Error('This trail does not exist!')
+        err.status = 404
+        throw err
+      }
+      if (!favorite) {
+        const err = new Error('This favorite does not exist!')
+        err.status = 404
+        throw err
+      }
+      await favorite.destroy()
+      cb(null, {
+        message: 'Favorite deleted successfully',
+        favoriteId: favorite.id,
+        trailId
+      })
+    } catch (err) {
+      cb(err)
+    }
   }
 }
 

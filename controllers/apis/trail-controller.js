@@ -18,6 +18,9 @@ const trailController = {
   },
   addFavoriteTrail: (req, res, next) => {
     trailServices.addFavoriteTrail(req, (err, data) => err ? next(err) : res.json(data))
+  },
+  deleteFavoriteTrail: (req, res, next) => {
+    trailServices.deleteFavoriteTrail(req, (err, data) => err ? next(err) : res.json(data))
   }
 }
 

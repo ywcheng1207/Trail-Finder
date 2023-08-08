@@ -15,6 +15,9 @@ const trailController = {
   },
   getConditions: (req, res, next) => {
     trailServices.getConditions(req, (err, data) => err ? next(err) : res.json(data))
+  },
+  addFavoriteTrail: (req, res, next) => {
+    trailServices.addFavoriteTrail(req, (err, data) => err ? next(err) : res.json(data))
   }
 }
 

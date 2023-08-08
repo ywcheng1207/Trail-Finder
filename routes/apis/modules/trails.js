@@ -7,6 +7,7 @@ const { authenticated, optionalAuthenticated } = require('../../../middleware/au
 
 router.post('/conditions/:trailId', authenticated, trailController.postCondition)
 router.get('/conditions/:trailId', optionalAuthenticated, trailController.getConditions)
+router.post('/favorites', authenticated, trailController.addFavoriteTrail)
 router.get('/search', optionalAuthenticated, trailController.searchTrailByKeyword)
 router.get('/:trailId', optionalAuthenticated, trailController.getTrail)
 router.get('/', optionalAuthenticated, trailController.getAllTrails)

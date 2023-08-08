@@ -1,5 +1,5 @@
 const sequelize = require('sequelize')
-const { Trail, Condition, User } = require('../models')
+const { Trail, Condition, User, Favorite } = require('../models')
 const { Op } = require('sequelize')
 
 // const fs = require('fs')
@@ -195,6 +195,37 @@ const trailServices = {
         return allConditionsJson
       })
       cb(null, allConditions)
+    } catch (err) {
+      cb(err)
+    }
+  },
+  addFavoriteTrail: async (req, cb) => {
+    try {
+      const userId = req.user.id
+      const trailId = req.body.trailId
+      const [trail, favorite] = await Promise.all([
+        Trail.findOne({
+          where: { id: trailId }
+        }),
+        Favorite.findOne({
+          where: { userId, trailId }
+        })
+      ])
+      if (!trail) {
+        const err = new Error('This trail does not exist!')
+        err.status = 404
+        throw err
+      }
+      if (favorite) {
+        const err = new Error('This favorite has already been created.')
+        err.status = 404
+        throw err
+      }
+      const favoriteTrail = await Favorite.create({
+        userId,
+        trailId
+      })
+      cb(null, favoriteTrail)
     } catch (err) {
       cb(err)
     }

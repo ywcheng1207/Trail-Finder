@@ -21,7 +21,13 @@ const adminController = {
   },
   deletePost: (req, res, next) => {
     adminServices.deletePost(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
-  }
+  },
+  getAllReports: (req, res, next) => {
+    adminServices.getAllReports(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
+  editReportSolved: (req, res, next) => {
+    adminServices.editReportSolved(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
 }
 
 module.exports = adminController

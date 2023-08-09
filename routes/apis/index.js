@@ -21,8 +21,6 @@ router.use('/users', users)
 router.use('/posts', posts)
 router.use('/followships', authenticated, followships)
 router.use('/admin', authenticated, isAdmin, admin)
-// router.use('/users', authenticated, isUser, users)
-// router.use('/posts', authenticated, isUser, posts)
 
 router.use('/', apiErrorHandler)
 router.use('/', (req, res) => res.send('this is home page.'))

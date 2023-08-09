@@ -52,6 +52,7 @@ const trailServices = {
           'id',
           'title',
           'category',
+          'image',
           'introduction',
           'location',
           'distance',

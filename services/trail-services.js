@@ -82,7 +82,8 @@ const trailServices = {
               `(SELECT COUNT(*) FROM Favorites WHERE Favorites.trailId = Trail.id AND Favorites.userId = ${userId})`
             ),
             'isFavorite'
-          ]
+          ],
+          'gpx'
         ],
         order: [['createdAt', 'DESC']]
       })
@@ -90,6 +91,29 @@ const trailServices = {
         const err = new Error('Trail not found')
         err.status = 404
         throw err
+      }
+      // 解析json並建構xml檔案以取得gpx
+      const gpxDataFromTrail = trail.gpx
+      const fileName = `${trail.title}.gpx`
+      const builderOptions = {
+        attributeNamePrefix: '@_',
+        attrNodeName: 'attr',
+        textNodeName: '#text',
+        ignoreAttributes: false,
+        cdataTagName: '__cdata',
+        cdataPositionChar: '\\c',
+        format: true,
+        indentBy: '  '
+      }
+      const builder = new XMLBuilder(builderOptions)
+      const gpxXml = builder.build(JSON.parse(gpxDataFromTrail))
+      const path = `./temp/${fileName}`
+
+      if (fs.existsSync(path)) {
+        console.log(`File ${path} already exists.`)
+      } else {
+        fs.writeFileSync(path, gpxXml, 'utf-8')
+        console.log(`File ${path} created successfully.`)
       }
 
       // 取得經緯度資訊

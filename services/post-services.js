@@ -267,11 +267,12 @@ const postServices = {
       cb(err)
     }
   },
-  getTempPost: async (req, cb) => {
+  getUserPost: async (req, cb) => {
     try {
+      const userId = req.user.id
       const postId = req.params.postId
-      const tempPost = await Post.findOne({
-        where: { id: postId, inProgress: true },
+      const userPost = await Post.findOne({
+        where: { id: postId },
         attributes: [
           'id',
           'title',
@@ -287,18 +288,18 @@ const postServices = {
         ],
         order: [['createdAt', 'DESC']]
       })
-      if (!tempPost) {
+      if (!userPost) {
         const err = new Error('Cannot find draft post!')
         err.status = 404
         throw err
       }
-      if (tempPost.userId !== req.user.id) {
+      if (userPost.userId !== req.user.id) {
         const err = new Error('Cannot get other users draft post!')
         err.status = 404
         throw err
       }
       const postsData = {
-        ...tempPost.toJSON()
+        ...userPost.toJSON()
       }
       cb(null, postsData)
     } catch (err) {

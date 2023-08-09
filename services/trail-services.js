@@ -2,7 +2,7 @@ const sequelize = require('sequelize')
 const { Trail, Condition, User, Favorite } = require('../models')
 const { Op } = require('sequelize')
 const fs = require('fs')
-const { XMLBuilder } = require('fast-xml-parser')
+const { XMLParser, XMLBuilder } = require('fast-xml-parser')
 
 const trailServices = {
   getAllTrails: async (req, cb) => {
@@ -82,16 +82,30 @@ const trailServices = {
         ],
         order: [['createdAt', 'DESC']]
       })
-      if (trail === null) { // 補上null錯誤處理
+      if (!trail) {
         const err = new Error('Trail not found')
         err.status = 404
         throw err
       }
+
+      // 取得經緯度資訊
+      const gpxData = fs.readFileSync(`./temp/${trail.title}.gpx`, 'utf-8')
+      const options = {
+        attributeNamePrefix: '',
+        ignoreAttributes: false,
+        parseAttributeValue: true
+      }
+      const parser = new XMLParser(options)
+      const jsonObj = parser.parse(gpxData)
+      const waypoints = jsonObj.gpx.trk.trkseg.trkpt
+      const gpx = waypoints.map(waypoint => [waypoint.lat, waypoint.lon])
+
       const trailData = {
         ...trail.toJSON()
       }
       trailData.favoriteCount = Boolean(trailData.favoriteCount)
       trailData.isFavorite = Boolean(trailData.isFavorite)
+      trailData.gpx = gpx
       cb(null, trailData)
     } catch (err) {
       cb(err)

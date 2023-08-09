@@ -132,10 +132,19 @@ const postServices = {
       cb(err)
     }
   },
-  getAllPosts: async (req, cb) => {
+  getUserAllPosts: async (req, cb) => {
     try {
-      const userId = req?.user ? req.user.id : 0
+      const userId = req.user.id
+      const user = await User.findOne({
+        where: { id: userId, isSuspended: false }
+      })
+      if (!user) {
+        const err = new Error('User dose not exist!')
+        err.status = 404
+        throw err
+      }
       const allPosts = await Post.findAll({
+        where: { userId },
         include: [
           { model: User, attributes: ['id', 'name', 'avatar'] }
         ],

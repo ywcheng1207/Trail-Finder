@@ -8,7 +8,8 @@ const postServices = {
     try {
       const userId = req.user ? req.user.id : 0
       const postId = req.params.postId
-      const post = await Post.findByPk(postId, {
+      const post = await Post.findOne({
+        where: { id: postId, inProgress: false },
         include: [
           {
             model: User,
@@ -63,6 +64,11 @@ const postServices = {
         ],
         order: [['createdAt', 'DESC']]
       })
+      if (!post) {
+        const err = new Error('Cannot find post!')
+        err.status = 404
+        throw err
+      }
       const postsData = {
         ...post.toJSON()
       }

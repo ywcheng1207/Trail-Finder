@@ -220,6 +220,7 @@ const postServices = {
       }
       cb(null, {
         message: 'Post successfully sent.',
+        postId: post.id,
         userId,
         createdAt: post.createdAt,
         updatedAt: post.updatedAt
@@ -251,6 +252,7 @@ const postServices = {
       }
       cb(null, {
         message: 'Temp post successfully sent.',
+        postId: post.id,
         userId,
         createdAt: post.createdAt,
         updatedAt: post.updatedAt

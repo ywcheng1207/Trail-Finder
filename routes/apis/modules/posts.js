@@ -7,8 +7,9 @@ const { authenticated, optionalAuthenticated } = require('../../../middleware/au
 
 router.delete('/collects/:postId', authenticated, postController.deleteCollect)
 router.delete('/likes/:postId', authenticated, postController.deleteLike)
-router.get('/:postId/cache', authenticated, postController.getTempPost)
+router.get('/users/:postId', authenticated, postController.getUserPost)
 router.get('/all', optionalAuthenticated, postController.getUserAllPosts)
+router.post('/report', authenticated, postController.addReport)
 router.get('/search', optionalAuthenticated, postController.searchPostByKeyword)
 router.get('/:postId', optionalAuthenticated, postController.getPost)
 router.post('/collects', authenticated, postController.addCollect)

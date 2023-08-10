@@ -82,7 +82,7 @@ const postServices = {
   },
   getPosts: async (req, cb) => {
     try {
-      const userId = req?.user ? req.user.id : 0
+      const userId = req.user ? req.user.id : 0
       const limit = Number(req.query.limit) || null
       const posts = await Post.findAll({
         where: { inProgress: false },

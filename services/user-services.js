@@ -116,6 +116,7 @@ const userServices = {
   },
   getUserData: async (req, cb) => {
     try {
+      const currentUserId = req.user ? req.user.id : 0
       const userId = req.params.id
       const user = await User.findByPk(userId, {
         attributes: [
@@ -147,7 +148,7 @@ const userServices = {
           ],
           [
             sequelize.literal(
-              `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = ${userId} AND Followships.followerId = ${req.user.id})`
+              `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = ${userId} AND Followships.followerId = ${currentUserId})`
             ),
             'isFollow'
           ]
@@ -169,6 +170,7 @@ const userServices = {
   },
   getUserFollowings: async (req, cb) => {
     try {
+      const currentUserId = req.user ? req.user.id : 0
       const userId = req.params.userId
       const checkUser = await User.findByPk(userId)
       if (!checkUser) {
@@ -193,7 +195,7 @@ const userServices = {
           'updatedAt',
           [
             sequelize.literal(
-              `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = Following.id AND Followships.followerId = ${req.user.id})`
+              `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = following.id AND Followships.followerId = ${currentUserId})`
             ),
             'isFollow'
           ]
@@ -211,6 +213,7 @@ const userServices = {
   },
   getUserFollowers: async (req, cb) => {
     try {
+      const currentUserId = req.user ? req.user.id : 0
       const userId = req.params.userId
       const checkUser = await User.findByPk(userId)
       if (!checkUser) {
@@ -235,7 +238,7 @@ const userServices = {
           'updatedAt',
           [
             sequelize.literal(
-              `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = Follower.id AND Followships.followerId = ${req.user.id})`
+              `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = follower.id AND Followships.followerId = ${currentUserId})`
             ),
             'isFollow'
           ]

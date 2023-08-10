@@ -16,8 +16,8 @@ const postController = {
   postTempPost: (req, res, next) => {
     postServices.postTempPost(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   },
-  getTempPost: (req, res, next) => {
-    postServices.getTempPost(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  getUserPost: (req, res, next) => {
+    postServices.getUserPost(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   },
   addReport: (req, res, next) => {
     postServices.addReport(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))

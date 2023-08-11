@@ -257,6 +257,12 @@ const userServices = {
   getUserFavoritePost: async (req, cb) => {
     try {
       const userId = req.params.userId
+      const user = await User.findByPk(userId)
+      if (!user) {
+        const err = new Error('User dose not exists!')
+        err.status = 404
+        throw err
+      }
       const favorite = await Favorite.findAll({
         where: { userId, trailId: null },
         include: [
@@ -282,6 +288,9 @@ const userServices = {
         ],
         order: [['createdAt', 'DESC']]
       })
+      if (favorite.length === 0) {
+        cb(null, { message: 'No favorite posts found.' })
+      }
       const favoritePost = favorite.map(post => {
         const postJson = post.toJSON()
         const description = postJson.Post.description
@@ -298,6 +307,12 @@ const userServices = {
   getUserFavoriteTrail: async (req, cb) => {
     try {
       const userId = req.params.userId
+      const user = await User.findByPk(userId)
+      if (!user) {
+        const err = new Error('User dose not exists!')
+        err.status = 404
+        throw err
+      }
       const favorite = await Favorite.findAll({
         where: { userId, postId: null },
         include: [
@@ -327,6 +342,9 @@ const userServices = {
         ],
         order: [['createdAt', 'DESC']]
       })
+      if (favorite.length === 0) {
+        cb(null, { message: 'No favorite trail found.' })
+      }
       const favoriteTrail = favorite.map(trail => trail.toJSON())
       cb(null, { favoriteTrail })
     } catch (err) {

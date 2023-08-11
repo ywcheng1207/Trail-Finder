@@ -56,13 +56,14 @@ const userServices = {
     try {
       const userId = req.params.userId
       const posts = await Post.findAll({
-        where: { userId },
+        where: { userId, inProgress: false },
         include: [
           { model: User, attributes: ['id', 'avatar'] }
         ],
         attributes: [
           'id',
           'title',
+          'description',
           'image',
           'difficulty',
           'userId',
@@ -71,8 +72,15 @@ const userServices = {
         ],
         order: [['createdAt', 'DESC']]
       })
-      console.log(posts)
-      const postsData = posts.map(post => post.toJSON())
+      const postsData = posts.map(post => {
+        const postJson = post.toJSON()
+        console.log(postJson)
+        const description = postJson.description
+        if (description.length > 200) {
+          postJson.description = description.slice(0, 200)
+        }
+        return postJson
+      })
       cb(null, { post: postsData })
     } catch (err) {
       cb(err)

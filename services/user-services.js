@@ -2,7 +2,7 @@ const sequelize = require('sequelize')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { imgurFileHandler } = require('../helpers/file-heplers')
-const { User, Post, Favorite, Followship, Notification } = require('../models')
+const { User, Post, Favorite, Followship, Notification, Trail } = require('../models')
 
 const userServices = {
   signIn: async (req, cb) => {
@@ -258,7 +258,7 @@ const userServices = {
     try {
       const userId = req.params.userId
       const favorite = await Favorite.findAll({
-        where: { userId },
+        where: { userId, trailId: null },
         include: [
           {
             model: Post,
@@ -291,6 +291,44 @@ const userServices = {
         return postJson
       })
       cb(null, { favoritePost })
+    } catch (err) {
+      cb(err)
+    }
+  },
+  getUserFavoriteTrail: async (req, cb) => {
+    try {
+      const userId = req.params.userId
+      const favorite = await Favorite.findAll({
+        where: { userId, postId: null },
+        include: [
+          {
+            model: Trail,
+            include: [
+              { model: User, attributes: ['id', 'name', 'avatar'] }
+            ],
+            attributes: [
+              'id',
+              'title',
+              'image',
+              'introduction',
+              'location',
+              'difficulty',
+              'distance',
+              'duration',
+              'userId',
+              'createdAt',
+              'updatedAt'
+            ]
+          }
+        ],
+        attributes: [
+          'id',
+          'trailId'
+        ],
+        order: [['createdAt', 'DESC']]
+      })
+      const favoriteTrail = favorite.map(trail => trail.toJSON())
+      cb(null, { favoriteTrail })
     } catch (err) {
       cb(err)
     }

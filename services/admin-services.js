@@ -23,6 +23,7 @@ const adminServices = {
           'name',
           'introduction',
           'avatar',
+          'isSuspended',
           'createdAt',
           'updatedAt'
         ],

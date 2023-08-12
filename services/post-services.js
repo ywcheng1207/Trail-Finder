@@ -538,13 +538,17 @@ const postServices = {
             {
               title: {
                 [Op.like]: `%${keyword}%`
-              },
+              }
+            },
+            {
               category: {
                 [Op.like]: `%${keyword}%`
-              },
+              }
+            },
+            {
               description: {
                 [Op.like]: `%${keyword}%`
-              },
+              }
             }
           ],
           inProgress: false

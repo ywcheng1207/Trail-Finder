@@ -21,14 +21,12 @@ module.exports = {
     const users = []
     // 5位一般使用者
     for (let i = 0; i < 5; i++) {
-      const maxLength = 150
-      const randomText = faker.lorem.text(maxLength)
       const user = {
         name: `user${i + 1}`,
         email: `user${i + 1}@example.com`,
         password: await bcrypt.hash('12345678', 10),
         avatar: `https://i.pravatar.cc/300?img=${Math.floor(Math.random() * 100)}`,
-        introduction: randomText,
+        introduction: generateLimitedText(150),
         role: 'user',
         isSuspended: false,
         createdAt: new Date(),
@@ -45,13 +43,19 @@ module.exports = {
         email: faker.internet.email(),
         password: await bcrypt.hash('12345678', 10),
         avatar: `https://i.pravatar.cc/300?img=${Math.floor(Math.random() * 100)}`,
-        introduction: faker.lorem.text(160),
+        introduction: generateLimitedText(150),
         role: 'user',
         isSuspended: false,
         createdAt: new Date(),
         updatedAt: new Date()
       }
       ghostUsers.push(ghostUser)
+    }
+
+    function generateLimitedText (maxLength) {
+      const randomText = faker.lorem.text()
+      const truncatedText = randomText.substring(0, maxLength)
+      return truncatedText
     }
 
     await queryInterface.bulkInsert('Users', [admin])

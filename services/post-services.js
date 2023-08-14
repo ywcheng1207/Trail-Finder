@@ -341,7 +341,7 @@ const postServices = {
     try {
       const currentUserId = req.user.id
       const postId = req.params.postId
-      const { title, category, description, difficulty, recommend } = req.body
+      const { title, category, description, difficulty, recommend, inProgress } = req.body
       const { file } = req
       const [post, filePaht] = await Promise.all([
         Post.findByPk(postId),
@@ -365,7 +365,8 @@ const postServices = {
         description: description || post.description,
         image: filePaht || post.image,
         difficulty: difficulty || post.difficulty,
-        recommend: recommend || post.recommend
+        recommend: recommend || post.recommend,
+        inProgress: inProgress || post.inProgress
       })
       cb(null, editPost)
     } catch (err) {

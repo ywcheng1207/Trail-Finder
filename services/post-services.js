@@ -531,6 +531,7 @@ const postServices = {
   },
   searchPostByKeyword: async (req, cb) => {
     try {
+      const userId = req.user ? req.user.id : 0
       const keyword = req.query.keyword
       const posts = await Post.findAll({
         where: {
@@ -553,9 +554,53 @@ const postServices = {
           ],
           inProgress: false
         },
+        include: [
+          { model: User, attributes: ['id', 'name', 'avatar'] }
+        ],
+        attributes: [
+          'id',
+          'title',
+          'category',
+          'description',
+          'image',
+          'difficulty',
+          'recommend',
+          'userId',
+          'createdAt',
+          'updatedAt',
+          [
+            sequelize.literal(
+              '(SELECT COUNT(*) FROM Favorites WHERE Favorites.postId = Post.id)'
+            ),
+            'favoriteCount'
+          ],
+          [
+            sequelize.literal(
+              '(SELECT COUNT(*) FROM Likes WHERE Likes.postId = Post.id)'
+            ),
+            'likeCount'
+          ],
+          [
+            sequelize.literal(
+              `(SELECT COUNT(*) FROM Favorites WHERE Favorites.postId = Post.id AND Favorites.userId = ${userId})`
+            ),
+            'isFavorite'
+          ],
+          [
+            sequelize.literal(
+              `(SELECT COUNT(*) FROM Likes WHERE Likes.postId = Post.id AND Likes.userId = ${userId})`
+            ),
+            'isLike'
+          ]
+        ],
         order: [['createdAt', 'DESC']]
       })
-      const searchData = posts.map(post => post.toJSON())
+      const searchData = posts.map(post => {
+        const postJson = post.toJSON()
+        postJson.isFavorite = Boolean(postJson.isFavorite)
+        postJson.isLike = Boolean(postJson.isLike)
+        return postJson
+      })
       cb(null, searchData)
     } catch (err) {
       cb(err)

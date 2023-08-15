@@ -27,7 +27,7 @@ const adminController = {
   },
   editReportSolved: (req, res, next) => {
     adminServices.editReportSolved(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
-  },
+  }
 }
 
 module.exports = adminController

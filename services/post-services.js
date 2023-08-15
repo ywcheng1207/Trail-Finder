@@ -269,7 +269,6 @@ const postServices = {
   },
   getUserPost: async (req, cb) => {
     try {
-      const userId = req.user.id
       const postId = req.params.postId
       const userPost = await Post.findOne({
         where: { id: postId },
@@ -441,7 +440,7 @@ const postServices = {
           where: { id: postId, inProgress: false }
         }),
         Favorite.findOne({
-          where: { userId: userId, postId: postId }
+          where: { userId, postId }
         })
       ])
       if (!post) {
@@ -455,8 +454,8 @@ const postServices = {
         throw err
       }
       const newFavorite = await Favorite.create({
-        userId: userId,
-        postId: postId
+        userId,
+        postId
       })
       cb(null, newFavorite)
     } catch (err) {
@@ -472,7 +471,7 @@ const postServices = {
           where: { id: postId, inProgress: false }
         }),
         Favorite.findOne({
-          where: { userId: userId, postId: postId }
+          where: { userId, postId }
         })
       ])
       if (!post) {
@@ -489,7 +488,7 @@ const postServices = {
       cb(null, {
         message: 'Favorite deleted successfully',
         FavoriteId: Favorite.id,
-        postId: postId
+        postId
       })
     } catch (err) {
       cb(err)
@@ -505,7 +504,7 @@ const postServices = {
           where: { id: postId, inProgress: false }
         }),
         Report.findOne({
-          where: { userId: userId, postId: postId }
+          where: { userId, postId }
         })
       ])
       if (!post) {
@@ -519,10 +518,10 @@ const postServices = {
         throw err
       }
       const newReport = await Report.create({
-        category: category,
-        content: content,
-        userId: userId,
-        postId: postId,
+        category,
+        content,
+        userId,
+        postId,
         isSolved: false
       })
       cb(null, newReport)

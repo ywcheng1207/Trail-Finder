@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const { User, Post, Favorite, Followship, Notification, Report } = require('../models')
+const { User, Post, Notification, Report } = require('../models')
 
 const adminServices = {
   signIn: async (req, cb) => {
@@ -173,11 +173,12 @@ const adminServices = {
     try {
       const reports = await Report.findAll({
         include: [
-          { model: Post,
+          {
+            model: Post,
             include: [
               { model: User, attributes: ['id', 'name'] }
             ],
-            attributes: ['id', 'title'] 
+            attributes: ['id', 'title']
           }
         ],
         order: [['createdAt', 'DESC']]

@@ -158,6 +158,7 @@ const postServices = {
           'id',
           'title',
           'category',
+          'description',
           'image',
           'difficulty',
           'recommend',

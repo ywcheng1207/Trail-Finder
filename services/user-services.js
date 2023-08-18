@@ -8,6 +8,7 @@ const userServices = {
   signIn: async (req, cb) => {
     try {
       const userData = req.user
+      console.log(userData)
       if (userData.isSuspended === true) {
         const err = new Error('User is suspended')
         err.status = 404

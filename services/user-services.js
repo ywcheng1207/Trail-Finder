@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { imgurFileHandler } = require('../helpers/file-heplers')
 const { User, Post, Favorite, Followship, Notification, Trail } = require('../models')
+const { Sequelize } = require('sequelize')
 
 const userServices = {
   signIn: async (req, cb) => {
@@ -63,7 +64,7 @@ const userServices = {
         attributes: [
           'id',
           'title',
-          'description',
+          [sequelize.fn('SUBSTRING', Sequelize.col('description'), 1, 200), 'description'],
           'image',
           'difficulty',
           'userId',
@@ -282,7 +283,7 @@ const userServices = {
             attributes: [
               'id',
               'title',
-              'description',
+              [sequelize.fn('SUBSTRING', Sequelize.col('description'), 1, 200), 'description'],
               'image',
               'userId',
               'createdAt',
@@ -299,14 +300,11 @@ const userServices = {
       if (favorite.length === 0) {
         cb(null, { message: 'No favorite posts found.' })
       }
-      const favoritePost = favorite.map(post => {
+      const favoriteData = favorite.map(post => {
         const postJson = post.toJSON()
-        const description = postJson.Post.description
-        if (description.length > 200) {
-          postJson.Post.description = description.slice(0, 200)
-        }
         return postJson
       })
+      const favoritePost = favoriteData.filter(post => post.Post !== null)
       cb(null, { favoritePost })
     } catch (err) {
       cb(err)

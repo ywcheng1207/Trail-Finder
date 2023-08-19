@@ -1,7 +1,7 @@
 const sequelize = require('sequelize')
 const { User, Post, Like, Favorite, Report } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-heplers')
-const { Op } = require('sequelize')
+const { Sequelize, Op } = require('sequelize')
 
 const postServices = {
   getPost: async (req, cb) => {
@@ -158,7 +158,7 @@ const postServices = {
           'id',
           'title',
           'category',
-          'description',
+          [sequelize.fn('SUBSTRING', Sequelize.col('description'), 1, 200), 'description'],
           'image',
           'difficulty',
           'recommend',
@@ -197,10 +197,6 @@ const postServices = {
         const postJson = post.toJSON()
         postJson.isFavorite = Boolean(postJson.isFavorite)
         postJson.isLike = Boolean(postJson.isLike)
-        const description = postJson.description
-        if (description.length > 200) {
-          postJson.description = description.slice(0, 200)
-        }
         return postJson
       })
       cb(null, allPostsData)

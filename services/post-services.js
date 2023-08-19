@@ -158,6 +158,7 @@ const postServices = {
           'id',
           'title',
           'category',
+          'description',
           'image',
           'difficulty',
           'recommend',
@@ -196,6 +197,10 @@ const postServices = {
         const postJson = post.toJSON()
         postJson.isFavorite = Boolean(postJson.isFavorite)
         postJson.isLike = Boolean(postJson.isLike)
+        const description = postJson.description
+        if (description.length > 200) {
+          postJson.description = description.slice(0, 200)
+        }
         return postJson
       })
       cb(null, allPostsData)

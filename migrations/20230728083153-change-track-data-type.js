@@ -9,9 +9,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.changeColumn('Trails', 'track', {
-      type: Sequelize.STRING,
-      allowNull: true
-    })
+    await queryInterface.removeColumn('Trails', 'track')
   }
 }

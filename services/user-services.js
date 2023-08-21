@@ -75,7 +75,6 @@ const userServices = {
       })
       const postsData = posts.map(post => {
         const postJson = post.toJSON()
-        console.log(postJson)
         const description = postJson.description
         if (description.length > 200) {
           postJson.description = description.slice(0, 200)

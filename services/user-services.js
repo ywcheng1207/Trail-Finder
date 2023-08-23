@@ -401,7 +401,6 @@ const userServices = {
       const isReadNotification = await notification.update({
         isRead: true
       })
-      console.log(isReadNotification)
       cb(null, isReadNotification)
     } catch (err) {
       cb(err)

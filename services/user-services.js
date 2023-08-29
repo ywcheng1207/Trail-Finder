@@ -150,8 +150,11 @@ const userServices = {
           ],
           [
             sequelize.literal(
-              `(SELECT COUNT(*) FROM Favorites WHERE Favorites.userId = ${userId} AND Favorites.postId IS NOT NULL)`
-            ),
+              `(SELECT COUNT(DISTINCT Favorites.postId)
+                FROM Favorites 
+                JOIN Posts ON Favorites.postId = Posts.id
+                WHERE Posts.userId = ${userId}
+          )`),
             'favoritePostCount'
           ],
           [

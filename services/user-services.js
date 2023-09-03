@@ -159,6 +159,18 @@ const userServices = {
           ],
           [
             sequelize.literal(
+              `
+              (SELECT COUNT(*)
+              FROM Users 
+              JOIN Posts ON Users.id = Posts.userId
+              JOIN Favorites ON Posts.id = Favorites.postId
+              WHERE Users.id = ${userId})
+              `
+            ),
+            'beFavoritedPostCount'
+          ],
+          [
+            sequelize.literal(
               `(SELECT COUNT(*) FROM Followships WHERE Followships.followingId = ${userId} AND Followships.followerId = ${currentUserId})`
             ),
             'isFollow'

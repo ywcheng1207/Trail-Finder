@@ -128,7 +128,7 @@ const trailServices = {
         console.log(`File ${path} created successfully.`)
       }
 
-      // 取得經緯度資訊
+      // 取得經緯度
       const gpxData = fs.readFileSync(`./temp/${trail.title}.gpx`, 'utf-8')
       const options = {
         attributeNamePrefix: '',

@@ -17,7 +17,7 @@
     "username": "root",
     "password": "password",
     "database": "trail-finder-project",
-    "host": "34.41.154.129",
+    "host": "172.19.32.2",
     "dialect": "mysql"
   }
 }

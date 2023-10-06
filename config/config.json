@@ -16,8 +16,8 @@
   "production": {
     "username": "root",
     "password": "password",
-    "database": "trail-finder",
-    "host": "34.81.4.236",
+    "database": "trail-finder-project",
+    "host": "34.41.154.129",
     "dialect": "mysql"
   }
 }

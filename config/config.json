@@ -2,8 +2,8 @@
   "development": {
     "username": "root",
     "password": "password",
-    "database": "trailFinder",
-    "host": "35.193.96.43",
+    "database": "trail-finder-project",
+    "host": "35.224.16.11",
     "dialect": "mysql"
   },
   "test": {
